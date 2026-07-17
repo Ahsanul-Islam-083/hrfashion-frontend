@@ -6,31 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Search, SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductCard } from "@/components/cards/ProductCard";
 import { ProductCardSkeleton } from "@/components/skeletons/ProductCardSkeleton";
-
-// Dummy fetch function - would hit real API
-const fetchProducts = async (params: URLSearchParams) => {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 800));
-  
-  // Dummy data
-  return {
-    data: Array(8).fill(0).map((_, i) => ({
-      _id: `prod-${i}`,
-      title: `Premium Garment ${i + 1}`,
-      slug: `premium-garment-${i + 1}`,
-      shortDescription: "A minimalist essential crafted from sustainable materials for everyday wear.",
-      price: 85 + (i * 15),
-      category: i % 2 === 0 ? "Women" : "Men",
-      images: ["https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&q=80&w=800"],
-      rating: 4.8
-    })),
-    meta: {
-      total: 32,
-      page: parseInt(params.get("page") || "1"),
-      totalPages: 4
-    }
-  };
-};
+import { fetchProducts } from "@/lib/api";
 
 function CollectionsContent() {
   const searchParams = useSearchParams();
@@ -160,34 +136,34 @@ function CollectionsContent() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {Array(8).fill(0).map((_, i) => <ProductCardSkeleton key={i} />)}
             </div>
-          ) : data?.data.length === 0 ? (
+          ) : data?.products.length === 0 ? (
             <div className="text-center py-24 text-neutral-500">
               No products found matching your criteria.
             </div>
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {data?.data.map((product) => (
+                {data?.products.map((product) => (
                   <ProductCard key={product._id} {...product} />
                 ))}
               </div>
               
               {/* Pagination */}
-              {data?.meta && data.meta.totalPages > 1 && (
+              {data && data.totalPages > 1 && (
                 <div className="mt-16 flex items-center justify-center gap-2">
                   <button 
-                    disabled={data.meta.page <= 1}
-                    onClick={() => updateParam("page", (data.meta.page - 1).toString())}
+                    disabled={data.page <= 1}
+                    onClick={() => updateParam("page", (data.page - 1).toString())}
                     className="p-2 border border-neutral-200 dark:border-neutral-800 rounded-sm disabled:opacity-50 hover:bg-neutral-50 dark:hover:bg-neutral-900"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                   <span className="text-sm font-medium px-4">
-                    Page {data.meta.page} of {data.meta.totalPages}
+                    Page {data.page} of {data.totalPages}
                   </span>
                   <button 
-                    disabled={data.meta.page >= data.meta.totalPages}
-                    onClick={() => updateParam("page", (data.meta.page + 1).toString())}
+                    disabled={data.page >= data.totalPages}
+                    onClick={() => updateParam("page", (data.page + 1).toString())}
                     className="p-2 border border-neutral-200 dark:border-neutral-800 rounded-sm disabled:opacity-50 hover:bg-neutral-50 dark:hover:bg-neutral-900"
                   >
                     <ChevronRight className="w-4 h-4" />
