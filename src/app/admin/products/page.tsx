@@ -1,24 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Pencil, Trash2, Plus, X, Loader2 } from "lucide-react";
+import { Pencil, Trash2, Plus, X, Loader2, Upload, ImageIcon } from "lucide-react";
 import { getToken } from "@/lib/auth-client";
 import { fetchProducts, createProduct, updateProduct, deleteProduct, type Product } from "@/lib/api";
+import { QUERY_KEYS } from "@/lib/queryKeys";
 
-const EMPTY: Partial<Product> = { title: "", slug: "", shortDescription: "", fullDescription: "", price: 0, category: "", images: [], stock: 0, sizes: [], colors: [], featured: false, rating: 0 };
+const EMPTY: Partial<Product> = {
+  title: "", shortDescription: "", fullDescription: "",
+  price: 0, category: "", images: [], stock: 0,
+  sizes: [], colors: [], featured: false, rating: 0,
+};
 
 export default function AdminProductsPage() {
   const qc = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [modal, setModal] = useState<{ open: boolean; product: Partial<Product> }>({ open: false, product: EMPTY });
   const [confirmId, setConfirmId] = useState<string | null>(null);
-  const [imagesRaw, setImagesRaw] = useState("");
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [sizesRaw, setSizesRaw] = useState("");
   const [colorsRaw, setColorsRaw] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-products"],
+    queryKey: QUERY_KEYS.admin.products(),
     queryFn: () => fetchProducts("limit=200"),
   });
 
@@ -28,29 +36,81 @@ export default function AdminProductsPage() {
     return fn(token);
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    if (imageUrls.length + files.length > 6) {
+      toast.error("You can upload a maximum of 6 images.");
+      return;
+    }
+    setIsUploading(true);
+    const uploadToast = toast.loading("Uploading images...");
+    try {
+      const API_KEY = process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API;
+      const uploadPromises = Array.from(files).map(async (file) => {
+        if (file.size > 5 * 1024 * 1024) throw new Error(`${file.name} exceeds the 5MB limit.`);
+        const formData = new FormData();
+        formData.append("image", file);
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${API_KEY}`, {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(`Failed to upload ${file.name}`);
+        return data.data.url as string;
+      });
+      const uploaded = await Promise.all(uploadPromises);
+      setImageUrls((prev) => [...prev, ...uploaded]);
+    } catch (err) {
+      toast.dismiss(uploadToast);
+      toast.error(err instanceof Error ? err.message : "Image upload failed.");
+    } finally {
+      toast.dismiss(uploadToast);
+      setIsUploading(false);
+      e.target.value = "";
+    }
+  };
+
   const saveMutation = useMutation({
     mutationFn: async (product: Partial<Product>) => {
-      const payload = { ...product, images: imagesRaw.split(",").map(s => s.trim()).filter(Boolean), sizes: sizesRaw.split(",").map(s => s.trim()).filter(Boolean), colors: colorsRaw.split(",").map(s => s.trim()).filter(Boolean) };
-      return withToken(t => product._id ? updateProduct(product._id!, payload, t) : createProduct(payload, t));
+      const payload = {
+        ...product,
+        images: imageUrls,
+        sizes: sizesRaw.split(",").map((s) => s.trim()).filter(Boolean),
+        colors: colorsRaw.split(",").map((s) => s.trim()).filter(Boolean),
+      };
+      // do not send slug
+      delete (payload as any).slug;
+      return withToken((t) => product._id ? updateProduct(product._id!, payload, t) : createProduct(payload, t));
     },
-    onSuccess: () => { toast.success("Product saved"); qc.invalidateQueries({ queryKey: ["admin-products"] }); closeModal(); },
+    onSuccess: () => {
+      toast.success("Product saved");
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.products() });
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.overview() });
+      closeModal();
+    },
     onError: (e: any) => toast.error(e.message),
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => withToken(t => deleteProduct(id, t)),
-    onSuccess: () => { toast.success("Product deleted"); qc.invalidateQueries({ queryKey: ["admin-products"] }); setConfirmId(null); },
+    mutationFn: (id: string) => withToken((t) => deleteProduct(id, t)),
+    onSuccess: () => {
+      toast.success("Product deleted");
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.products() });
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.overview() });
+      setConfirmId(null);
+    },
     onError: (e: any) => toast.error(e.message),
   });
 
   const openModal = (product: Partial<Product> = EMPTY) => {
     setModal({ open: true, product });
-    setImagesRaw((product.images || []).join(", "));
+    setImageUrls(product.images || []);
     setSizesRaw((product.sizes || []).join(", "));
     setColorsRaw((product.colors || []).join(", "));
   };
-  const closeModal = () => setModal({ open: false, product: EMPTY });
-  const setField = (k: keyof Product, v: any) => setModal(m => ({ ...m, product: { ...m.product, [k]: v } }));
+  const closeModal = () => { setModal({ open: false, product: EMPTY }); setImageUrls([]); };
+  const setField = (k: keyof Product, v: any) => setModal((m) => ({ ...m, product: { ...m.product, [k]: v } }));
   const p = modal.product;
 
   return (
@@ -69,15 +129,17 @@ export default function AdminProductsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="bg-neutral-50 dark:bg-neutral-900/50 border-b border-neutral-200 dark:border-neutral-800">
-              <tr>{["Image", "Title", "Category", "Price", "Stock", "Actions"].map(h => <th key={h} className="px-5 py-3.5 font-medium uppercase tracking-widest text-xs text-neutral-500">{h}</th>)}</tr>
+              <tr>{["Image", "Title", "Category", "Price", "Stock", "Actions"].map((h) => <th key={h} className="px-5 py-3.5 font-medium uppercase tracking-widest text-xs text-neutral-500">{h}</th>)}</tr>
             </thead>
             <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
               {isLoading ? (
                 <tr><td colSpan={6} className="px-5 py-10 text-center text-neutral-500">Loading...</td></tr>
-              ) : data?.products.map(prod => (
+              ) : data?.products.map((prod) => (
                 <tr key={prod._id} className="hover:bg-neutral-50 dark:hover:bg-neutral-900/30 transition-colors">
                   <td className="px-5 py-3">
-                    {prod.images[0] ? <img src={prod.images[0]} alt={prod.title} className="w-10 h-12 object-cover rounded-sm" /> : <div className="w-10 h-12 bg-neutral-100 dark:bg-neutral-900 rounded-sm" />}
+                    {prod.images[0]
+                      ? <img src={prod.images[0]} alt={prod.title} className="w-10 h-12 object-cover rounded-sm" />
+                      : <div className="w-10 h-12 bg-neutral-100 dark:bg-neutral-900 rounded-sm flex items-center justify-center"><ImageIcon className="w-4 h-4 text-neutral-400" /></div>}
                   </td>
                   <td className="px-5 py-3 font-medium max-w-[180px] truncate">{prod.title}</td>
                   <td className="px-5 py-3 text-neutral-500">{prod.category}</td>
@@ -105,36 +167,110 @@ export default function AdminProductsPage() {
               <button onClick={closeModal}><X className="w-5 h-5" /></button>
             </div>
             <div className="p-6 overflow-y-auto space-y-4">
-              {(["title", "slug", "category"] as const).map(f => (
+              {(["title", "category"] as const).map((f) => (
                 <div key={f} className="space-y-1">
                   <label className="text-xs uppercase tracking-widest font-medium text-neutral-500 capitalize">{f}</label>
-                  <input value={(p[f] as string) || ""} onChange={e => setField(f, e.target.value)} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground" />
+                  <input value={(p[f] as string) || ""} onChange={(e) => setField(f, e.target.value)} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground" />
                 </div>
               ))}
+
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1"><label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Price</label><input type="number" value={p.price || 0} onChange={e => setField("price", parseFloat(e.target.value))} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none" /></div>
-                <div className="space-y-1"><label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Stock</label><input type="number" value={p.stock || 0} onChange={e => setField("stock", parseInt(e.target.value))} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none" /></div>
+                <div className="space-y-1">
+                  <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Price</label>
+                  <input type="number" value={p.price || 0} onChange={(e) => setField("price", parseFloat(e.target.value))} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Stock</label>
+                  <input type="number" value={p.stock || 0} onChange={(e) => setField("stock", parseInt(e.target.value))} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none" />
+                </div>
               </div>
-              {(["shortDescription", "fullDescription"] as const).map(f => (
+
+              {(["shortDescription", "fullDescription"] as const).map((f) => (
                 <div key={f} className="space-y-1">
                   <label className="text-xs uppercase tracking-widest font-medium text-neutral-500 capitalize">{f.replace(/([A-Z])/g, " $1")}</label>
-                  <textarea rows={f === "fullDescription" ? 4 : 2} value={(p[f] as string) || ""} onChange={e => setField(f, e.target.value)} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none resize-none" />
+                  <textarea rows={f === "fullDescription" ? 4 : 2} value={(p[f] as string) || ""} onChange={(e) => setField(f, e.target.value)} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none resize-none" />
                 </div>
               ))}
-              {[{ label: "Images (comma-separated URLs)", val: imagesRaw, set: setImagesRaw }, { label: "Sizes (comma-separated)", val: sizesRaw, set: setSizesRaw }, { label: "Colors (comma-separated)", val: colorsRaw, set: setColorsRaw }].map(({ label, val, set }) => (
+
+              {/* Image Upload */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Images ({imageUrls.length}/6)</label>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading || imageUrls.length >= 6}
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-neutral-200 dark:border-neutral-800 text-xs font-medium uppercase tracking-widest rounded-sm hover:bg-neutral-50 dark:hover:bg-neutral-900 disabled:opacity-50 transition-colors"
+                  >
+                    {isUploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                    {isUploading ? "Uploading..." : "Upload"}
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                </div>
+                {imageUrls.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {imageUrls.map((url, i) => (
+                      <div key={i} className="relative group w-20 h-24 flex-shrink-0">
+                        <img src={url} alt="" className="w-full h-full object-cover rounded-sm border border-neutral-200 dark:border-neutral-800" />
+                        <button
+                          onClick={() => setImageUrls((prev) => prev.filter((_, j) => j !== i))}
+                          className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                    {imageUrls.length < 6 && (
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploading}
+                        className="w-20 h-24 flex-shrink-0 border-2 border-dashed border-neutral-200 dark:border-neutral-700 rounded-sm flex flex-col items-center justify-center gap-1 text-neutral-400 hover:border-neutral-400 hover:text-neutral-500 transition-colors disabled:opacity-50"
+                      >
+                        <Plus className="w-4 h-4" />
+                        <span className="text-[10px] uppercase tracking-widest">Add</span>
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="w-full h-24 border-2 border-dashed border-neutral-200 dark:border-neutral-700 rounded-sm flex flex-col items-center justify-center gap-2 text-neutral-400 hover:border-neutral-400 hover:text-neutral-500 transition-colors disabled:opacity-50"
+                  >
+                    <Upload className="w-5 h-5" />
+                    <span className="text-xs uppercase tracking-widest">Click to upload images (max 6, 5MB each)</span>
+                  </button>
+                )}
+              </div>
+
+              {[{ label: "Sizes (comma-separated)", val: sizesRaw, set: setSizesRaw }, { label: "Colors (comma-separated)", val: colorsRaw, set: setColorsRaw }].map(({ label, val, set }) => (
                 <div key={label} className="space-y-1">
                   <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">{label}</label>
-                  <input value={val} onChange={e => set(e.target.value)} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none" />
+                  <input value={val} onChange={(e) => set(e.target.value)} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none" />
                 </div>
               ))}
+
               <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" checked={!!p.featured} onChange={e => setField("featured", e.target.checked)} className="w-4 h-4" />
+                <input type="checkbox" checked={!!p.featured} onChange={(e) => setField("featured", e.target.checked)} className="w-4 h-4" />
                 <span className="text-sm font-medium">Featured Product</span>
               </label>
             </div>
             <div className="p-6 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50 flex justify-end gap-3">
               <button onClick={closeModal} className="px-5 py-2.5 border border-neutral-200 dark:border-neutral-800 text-sm font-medium uppercase tracking-widest rounded-sm hover:bg-neutral-100 dark:hover:bg-neutral-900">Cancel</button>
-              <button onClick={() => saveMutation.mutate(p)} disabled={saveMutation.isPending} className="px-7 py-2.5 bg-foreground text-background text-sm font-medium uppercase tracking-widest rounded-sm hover:opacity-90 flex items-center gap-2 min-w-[100px] justify-center">
+              <button
+                onClick={() => saveMutation.mutate(p)}
+                disabled={saveMutation.isPending || isUploading}
+                className="px-7 py-2.5 bg-foreground text-background text-sm font-medium uppercase tracking-widest rounded-sm hover:opacity-90 flex items-center gap-2 min-w-[100px] justify-center disabled:opacity-60"
+              >
                 {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save"}
               </button>
             </div>

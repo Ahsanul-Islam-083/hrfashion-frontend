@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Pencil, Trash2, Plus, X, Loader2, ToggleLeft, ToggleRight } from "lucide-react";
 import { getToken } from "@/lib/auth-client";
 import { fetchCareersAdmin, createJob, updateJob, deleteJob, type Job } from "@/lib/api";
+import { QUERY_KEYS } from "@/lib/queryKeys";
 
 const EMPTY: Partial<Job> = { title: "", department: "", location: "", type: "full-time", description: "", requirements: [], status: "open" };
 
@@ -16,7 +17,7 @@ export default function AdminCareersPage() {
   const [reqRaw, setReqRaw] = useState("");
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-careers"],
+    queryKey: QUERY_KEYS.admin.careers(),
     queryFn: async () => { const t = await getToken(); if (!t) throw new Error("No token"); return fetchCareersAdmin(t); },
   });
 
@@ -27,13 +28,13 @@ export default function AdminCareersPage() {
       const payload = { ...job, requirements: reqRaw.split("\n").map(s => s.trim()).filter(Boolean) };
       return withToken(t => job._id ? updateJob(job._id!, payload, t) : createJob(payload, t));
     },
-    onSuccess: () => { toast.success("Job saved"); qc.invalidateQueries({ queryKey: ["admin-careers"] }); closeModal(); },
+    onSuccess: () => { toast.success("Job saved"); qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.careers() }); qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.overview() }); closeModal(); },
     onError: (e: any) => toast.error(e.message),
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => withToken(t => deleteJob(id, t)),
-    onSuccess: () => { toast.success("Job deleted"); qc.invalidateQueries({ queryKey: ["admin-careers"] }); setConfirmId(null); },
+    onSuccess: () => { toast.success("Job deleted"); qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.careers() }); qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.overview() }); setConfirmId(null); },
     onError: (e: any) => toast.error(e.message),
   });
 
@@ -43,7 +44,8 @@ export default function AdminCareersPage() {
       if (!t) throw new Error("No token");
       await updateJob(job._id, { status: job.status === "open" ? "closed" : "open" }, t);
       toast.success(`Job ${job.status === "open" ? "closed" : "reopened"}`);
-      qc.invalidateQueries({ queryKey: ["admin-careers"] });
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.careers() });
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.overview() });
     } catch (e: any) { toast.error(e.message); }
   };
 

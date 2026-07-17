@@ -4,11 +4,12 @@ import { fetchJobById } from "@/lib/api";
 import { JobDetailsClient } from "@/components/careers/JobDetailsClient";
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const job = await fetchJobById(params.id);
+  const { id } = await params;
+  const job = await fetchJobById(id);
   
   if (!job) {
     return {
@@ -23,7 +24,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function JobDetailsPage({ params }: Props) {
-  const job = await fetchJobById(params.id);
+  const { id } = await params;
+  const job = await fetchJobById(id);
   
   if (!job) {
     notFound();

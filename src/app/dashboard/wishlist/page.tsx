@@ -7,12 +7,13 @@ import { toast } from "sonner";
 import { fetchWishlist, removeFromWishlist } from "@/lib/api";
 import { getToken } from "@/lib/auth-client";
 import { ProductCard } from "@/components/cards/ProductCard";
+import { QUERY_KEYS } from "@/lib/queryKeys";
 
 export default function WishlistPage() {
   const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["wishlist"],
+    queryKey: QUERY_KEYS.wishlist(),
     queryFn: async () => {
       const token = await getToken();
       if (!token) throw new Error("No token");
@@ -33,7 +34,7 @@ export default function WishlistPage() {
     },
     onSuccess: () => {
       toast.success("Removed from wishlist");
-      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.wishlist() });
     },
     onError: () => {
       toast.error("Failed to remove item");

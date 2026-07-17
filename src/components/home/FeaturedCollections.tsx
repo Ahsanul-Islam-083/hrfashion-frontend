@@ -25,7 +25,7 @@ export async function FeaturedCollections() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {products.map((product) => (
-          <Link href={`/collections/${product.slug}`} key={product._id} className="group block">
+          <Link href={`/collections/${product._id}`} key={product._id} className="group block">
             <div className="aspect-[3/4] bg-neutral-100 dark:bg-neutral-900 mb-4 overflow-hidden rounded-sm relative">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img 

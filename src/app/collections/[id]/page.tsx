@@ -1,15 +1,16 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { fetchProductBySlug, fetchProducts } from "@/lib/api";
+import { fetchProductById, fetchProducts } from "@/lib/api";
 import { ProductDetailsClient } from "@/components/product/ProductDetailsClient";
 import { ProductCard } from "@/components/cards/ProductCard";
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const product = await fetchProductBySlug(params.slug);
+  const { id } = await params;
+  const product = await fetchProductById(id);
   
   if (!product) {
     return {
@@ -24,7 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ProductDetailsPage({ params }: Props) {
-  const product = await fetchProductBySlug(params.slug);
+  const { id } = await params;
+  const product = await fetchProductById(id);
   
   if (!product) {
     notFound();

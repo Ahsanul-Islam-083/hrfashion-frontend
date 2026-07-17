@@ -13,6 +13,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({
+  _id,
   title,
   slug,
   shortDescription,
@@ -22,7 +23,7 @@ export function ProductCard({
 }: ProductCardProps) {
   return (
     <div className="group flex flex-col bg-background rounded-sm border border-neutral-200 dark:border-neutral-800 overflow-hidden hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors">
-      <Link href={`/collections/${slug}`} className="block relative aspect-[3/4] bg-neutral-100 dark:bg-neutral-900 overflow-hidden">
+      <Link href={`/collections/${_id}`} className="block relative aspect-[3/4] bg-neutral-100 dark:bg-neutral-900 overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={images[0] || "https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&q=80&w=800"}
@@ -47,7 +48,7 @@ export function ProductCard({
             <span className="text-xs">{rating.toFixed(1)}</span>
           </div>
           <Link 
-            href={`/collections/${slug}`}
+            href={`/collections/${_id}`}
             className="text-xs font-medium uppercase tracking-widest hover:text-neutral-500 transition-colors"
           >
             View Details

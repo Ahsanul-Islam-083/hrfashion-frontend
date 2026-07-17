@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 import { getToken } from "@/lib/auth-client";
 import { fetchApplicationsAdmin, updateApplicationStatus } from "@/lib/api";
+import { QUERY_KEYS } from "@/lib/queryKeys";
 
 const STATUS_STYLES: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
@@ -19,7 +20,7 @@ export default function AdminApplicationsPage() {
   const [pendingAction, setPendingAction] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-applications", statusFilter],
+    queryKey: QUERY_KEYS.admin.applications(statusFilter),
     queryFn: async () => {
       const t = await getToken();
       if (!t) throw new Error("No token");
@@ -36,7 +37,10 @@ export default function AdminApplicationsPage() {
     },
     onSuccess: (updated) => {
       toast.success(`Application ${updated.status}`);
-      qc.setQueryData(["admin-applications", statusFilter], (old: any) => old ? { ...old, applications: old.applications.map((a: any) => a._id === updated._id ? updated : a) } : old);
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.applications() });
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.overview() });
+      // Also propagate to user's own applications list
+      qc.invalidateQueries({ queryKey: QUERY_KEYS.applications() });
       setPendingAction(null);
     },
     onError: (e: any) => { toast.error(e.message); setPendingAction(null); },

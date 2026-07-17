@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Loader2, ShieldCheck, ShieldMinus, Trash2 } from "lucide-react";
 import { useSession, getToken } from "@/lib/auth-client";
 import { fetchUsers, updateUserRole, deleteUser } from "@/lib/api";
+import { QUERY_KEYS } from "@/lib/queryKeys";
 
 function UsersContent() {
   const qc = useQueryClient();
@@ -24,7 +25,7 @@ function UsersContent() {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-users", searchParams.toString()],
+    queryKey: QUERY_KEYS.admin.users(searchParams.toString()),
     queryFn: async () => { const t = await getToken(); if (!t) throw new Error("No token"); return fetchUsers(t, searchParams.toString()); },
   });
 
@@ -32,13 +33,13 @@ function UsersContent() {
 
   const roleMutation = useMutation({
     mutationFn: async ({ id, role }: { id: string; role: string }) => { setPendingId(id); return withToken(t => updateUserRole(id, role, t)); },
-    onSuccess: (updated) => { toast.success(`Role updated to ${updated.role}`); qc.invalidateQueries({ queryKey: ["admin-users"] }); setPendingId(null); },
+    onSuccess: (updated) => { toast.success(`Role updated to ${updated.role}`); qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.users() }); qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.overview() }); setPendingId(null); },
     onError: (e: any) => { toast.error(e.message); setPendingId(null); },
   });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => withToken(t => deleteUser(id, t)),
-    onSuccess: () => { toast.success("User deleted"); qc.invalidateQueries({ queryKey: ["admin-users"] }); setConfirmId(null); },
+    onSuccess: () => { toast.success("User deleted"); qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.users() }); qc.invalidateQueries({ queryKey: QUERY_KEYS.admin.overview() }); setConfirmId(null); },
     onError: (e: any) => toast.error(e.message),
   });
 

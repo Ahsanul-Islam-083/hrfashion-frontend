@@ -6,6 +6,7 @@ import { useState } from "react";
 import { LayoutDashboard, FileText, Heart, Bot, Settings, LogOut, Menu, X } from "lucide-react";
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navigation = [
   { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
@@ -109,7 +110,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           />
         )}
         <div className="max-w-5xl mx-auto pt-12 md:pt-0">
-          {children}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     </div>

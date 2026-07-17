@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { Instagram, Facebook, p, Pin } from "lucide-react"; // Using generic icons for minimal look
+// import { Instagram, Facebook, p, Pin } from "lucide-react"; // Using generic icons for minimal look
+import { CiFacebook, CiInstagram , } from "react-icons/ci";
+import { ImPinterest2 } from "react-icons/im";
 
 export function Footer() {
   return (
@@ -49,13 +51,13 @@ export function Footer() {
             <h4 className="text-sm uppercase font-semibold tracking-wider mb-6">Social</h4>
             <div className="flex gap-4">
               <a href="https://instagram.com" target="_blank" rel="noreferrer" className="p-2 border border-neutral-200 dark:border-neutral-700 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
-                <Instagram className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                <CiInstagram className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
               </a>
               <a href="https://facebook.com" target="_blank" rel="noreferrer" className="p-2 border border-neutral-200 dark:border-neutral-700 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
-                <Facebook className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                <CiFacebook className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
               </a>
               <a href="https://pinterest.com" target="_blank" rel="noreferrer" className="p-2 border border-neutral-200 dark:border-neutral-700 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
-                <Pin className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
+                <ImPinterest2 className="w-4 h-4 text-neutral-600 dark:text-neutral-400" />
               </a>
             </div>
           </div>

@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, Briefcase, FileText, Users, LogOut } from "lucide-react";
+import { LayoutDashboard, Package, Briefcase, FileText, Users, LogOut, Wrench } from "lucide-react";
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navigation = [
   { name: "Overview", href: "/admin", icon: LayoutDashboard },
@@ -12,6 +13,7 @@ const navigation = [
   { name: "Careers", href: "/admin/careers", icon: Briefcase },
   { name: "Applications", href: "/admin/applications", icon: FileText },
   { name: "Users", href: "/admin/users", icon: Users },
+  { name: "Services", href: "/admin/services", icon: Wrench },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -64,7 +66,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
 
       <div className="flex-1 md:ml-64 p-6 md:p-10 overflow-y-auto">
-        <div className="max-w-7xl mx-auto">{children}</div>
+        <div className="max-w-7xl mx-auto">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

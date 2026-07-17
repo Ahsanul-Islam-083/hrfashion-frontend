@@ -2,15 +2,22 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useSession } from "@/lib/auth-client";
-import { Menu, X, User, ShoppingBag } from "lucide-react";
+import { useSession, signOut } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { Menu, X, User, ShoppingBag, LayoutDashboard, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Navbar() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/");
+  };
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 transition-colors">
@@ -30,15 +37,45 @@ export function Navbar() {
           </div>
 
           <div className="hidden md:flex items-center space-x-4 text-sm">
+            <button className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors">
+              <ShoppingBag className="w-4 h-4" />
+            </button>
             {session ? (
-              <div className="flex items-center gap-4">
-                <Link href="/dashboard" className="hover:text-neutral-500 transition-colors">Dashboard</Link>
-                {session.user.role === "admin" && (
-                  <Link href="/admin" className="hover:text-neutral-500 transition-colors">Admin</Link>
-                )}
-                <button className="flex items-center gap-2 p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors">
-                  <User className="w-4 h-4" />
+              <div className="relative group">
+                <button className="flex items-center justify-center w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-800 text-xs font-medium uppercase overflow-hidden border border-neutral-200 dark:border-neutral-700 focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2 dark:focus:ring-offset-background">
+                  {session.user.image ? (
+                    <img src={session.user.image} alt={session.user.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{session.user.name?.charAt(0)}</span>
+                  )}
                 </button>
+                <div className="absolute right-0 mt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top-right z-50 pt-2">
+                  <div className="py-2 bg-background border border-neutral-200 dark:border-neutral-800 rounded-sm shadow-xl">
+                    <div className="px-4 py-3 border-b border-neutral-100 dark:border-neutral-800">
+                      <p className="text-sm font-medium text-foreground truncate">{session.user.name}</p>
+                      <p className="text-xs text-neutral-500 truncate">{session.user.email}</p>
+                    </div>
+                    <div className="py-1">
+                      {session.user.role === "admin" ? (
+                        <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-900 hover:text-foreground">
+                          <LayoutDashboard className="w-4 h-4" />
+                          Admin
+                        </Link>
+                      ) : (
+                        <Link href="/dashboard" className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-900 hover:text-foreground">
+                          <LayoutDashboard className="w-4 h-4" />
+                          Dashboard
+                        </Link>
+                      )}
+                    </div>
+                    <div className="py-1 border-t border-neutral-100 dark:border-neutral-800">
+                      <button onClick={handleSignOut} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
+                        <LogOut className="w-4 h-4" />
+                        Log Out
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
               <div className="flex items-center gap-4">
@@ -48,9 +85,6 @@ export function Navbar() {
                 </Link>
               </div>
             )}
-            <button className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition-colors">
-              <ShoppingBag className="w-4 h-4" />
-            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -78,12 +112,38 @@ export function Navbar() {
               
               <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800 flex flex-col gap-4">
                 {session ? (
-                  <>
-                    <Link href="/dashboard" onClick={toggleMenu} className="block py-2 text-lg">Dashboard</Link>
-                    {session.user.role === "admin" && (
-                      <Link href="/admin" onClick={toggleMenu} className="block py-2 text-lg">Admin</Link>
-                    )}
-                  </>
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="w-16 h-16 rounded-full bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center text-xl font-medium uppercase overflow-hidden border border-neutral-200 dark:border-neutral-700">
+                        {session.user.image ? (
+                          <img src={session.user.image} alt={session.user.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span>{session.user.name?.charAt(0)}</span>
+                        )}
+                      </div>
+                      <div className="text-center">
+                        <p className="font-medium text-foreground">{session.user.name}</p>
+                        <p className="text-sm text-neutral-500">{session.user.email}</p>
+                      </div>
+                    </div>
+                    <div className="w-full flex flex-col gap-3">
+                      {session.user.role === "admin" ? (
+                        <Link href="/admin" onClick={toggleMenu} className="flex items-center justify-center gap-2 w-full py-3 bg-neutral-100 dark:bg-neutral-900 rounded-sm font-medium">
+                          <LayoutDashboard className="w-4 h-4" />
+                          Admin
+                        </Link>
+                      ) : (
+                        <Link href="/dashboard" onClick={toggleMenu} className="flex items-center justify-center gap-2 w-full py-3 bg-neutral-100 dark:bg-neutral-900 rounded-sm font-medium">
+                          <LayoutDashboard className="w-4 h-4" />
+                          Dashboard
+                        </Link>
+                      )}
+                      <button onClick={() => { toggleMenu(); handleSignOut(); }} className="flex items-center justify-center gap-2 w-full py-3 border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 rounded-sm font-medium hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
+                        <LogOut className="w-4 h-4" />
+                        Log Out
+                      </button>
+                    </div>
+                  </div>
                 ) : (
                   <div className="flex gap-4 pt-2">
                     <Link href="/login" onClick={toggleMenu} className="flex-1 text-center py-3 border border-foreground rounded-sm">Login</Link>

@@ -3,7 +3,10 @@
 import { useState, useEffect } from "react";
 import { X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { useSession } from "@/lib/auth-client";
+import { useSession, getToken } from "@/lib/auth-client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { submitApplication } from "@/lib/api";
+import { QUERY_KEYS } from "@/lib/queryKeys";
 
 interface ApplyModalProps {
   jobId: string;
@@ -14,6 +17,7 @@ interface ApplyModalProps {
 
 export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps) {
   const { data: session } = useSession();
+  const queryClient = useQueryClient();
   
   const [formData, setFormData] = useState({
     applicantName: "",
@@ -22,7 +26,6 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
     resumeUrl: "",
     coverLetter: ""
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (session?.user) {
@@ -42,39 +45,26 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isOpen, onClose]);
 
+  const applyMutation = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      const token = await getToken();
+      return submitApplication({ jobId, ...data }, token ?? undefined);
+    },
+    onSuccess: () => {
+      toast.success("Application submitted successfully!");
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.applications() });
+      onClose();
+    },
+    onError: (err: any) => {
+      toast.error(err.message || "An error occurred");
+    },
+  });
+
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    
-    try {
-      // @ts-ignore - auth-client types might be missing getToken, fallback to cookie or fetch
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/applications`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // The proxy or better-auth client will handle cookies, but if a JWT is strictly needed:
-          // "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          jobId,
-          ...formData
-        })
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Failed to submit application");
-      }
-
-      toast.success("Application submitted successfully!");
-      onClose();
-    } catch (err: any) {
-      toast.error(err.message || "An error occurred");
-    } finally {
-      setIsSubmitting(false);
-    }
+    applyMutation.mutate(formData);
   };
 
   return (
@@ -161,10 +151,10 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
           <button 
             type="submit" 
             form="apply-form"
-            disabled={isSubmitting}
+            disabled={applyMutation.isPending}
             className="px-8 py-3 bg-foreground text-background text-sm font-medium uppercase tracking-widest rounded-sm hover:opacity-90 transition-opacity flex items-center justify-center min-w-[140px]"
           >
-            {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit"}
+            {applyMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : "Submit"}
           </button>
         </div>
       </div>

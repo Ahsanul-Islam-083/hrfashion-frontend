@@ -69,6 +69,36 @@ export interface WishlistItem {
   product?: Product; // Populated from backend
 }
 
+export interface Review {
+  _id: string;
+  productId: string;
+  userId: string;
+  userName: string;
+  userImage?: string;
+  content: string;
+  rating?: number;
+  parentId: string | null;
+  likes: string[];
+  createdAt: string;
+  replies?: Review[];
+}
+
+export interface ReviewsResponse {
+  reviews: Review[];
+  averageRating: number;
+}
+
+export interface Service {
+  _id: string;
+  title: string;
+  description: string;
+  icon: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+
 export const fetchProducts = async (params: URLSearchParams | string): Promise<ProductsResponse> => {
   const query = typeof params === "string" ? params : params.toString();
   const res = await fetch(`${API_URL}/api/products?${query}`, { next: { revalidate: 60 } });
@@ -76,8 +106,8 @@ export const fetchProducts = async (params: URLSearchParams | string): Promise<P
   return res.json();
 };
 
-export const fetchProductBySlug = async (slug: string): Promise<Product | null> => {
-  const res = await fetch(`${API_URL}/api/products/${slug}`, { next: { revalidate: 60 } });
+export const fetchProductById = async (id: string): Promise<Product | null> => {
+  const res = await fetch(`${API_URL}/api/products/${id}`, { next: { revalidate: 60 } });
   if (res.status === 404) return null;
   if (!res.ok) throw new Error("Failed to fetch product");
   return res.json();
@@ -251,3 +281,97 @@ export const deleteUser = async (id: string, token: string): Promise<void> => {
   const res = await authFetch(`${API_URL}/api/users/${id}`, token, { method: "DELETE" });
   if (!res.ok) throw new Error("Failed to delete user");
 };
+
+export const submitApplication = async (
+  data: { jobId: string; applicantName: string; email: string; phone: string; resumeUrl: string; coverLetter?: string },
+  token?: string
+): Promise<Application> => {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const res = await fetch(`${API_URL}/api/applications`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as any).error || "Failed to submit application");
+  }
+  return res.json();
+};
+
+export const fetchProductReviews = async (productId: string): Promise<ReviewsResponse> => {
+  const res = await fetch(`${API_URL}/api/products/${productId}/reviews`);
+  if (!res.ok) throw new Error("Failed to fetch reviews");
+  return res.json();
+};
+
+export const createReview = async (
+  productId: string,
+  data: { content: string; rating?: number; parentId?: string },
+  token: string
+): Promise<Review> => {
+  const res = await authFetch(`${API_URL}/api/products/${productId}/reviews`, token, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as any).error || "Failed to create review");
+  }
+  return res.json();
+};
+
+export const toggleReviewLike = async (id: string, token: string): Promise<Review> => {
+  const res = await authFetch(`${API_URL}/api/reviews/${id}/like`, token, { method: "PUT" });
+  if (!res.ok) throw new Error("Failed to toggle like");
+  return res.json();
+};
+
+export const updateReview = async (
+  id: string,
+  data: { content?: string; rating?: number },
+  token: string
+): Promise<Review> => {
+  const res = await authFetch(`${API_URL}/api/reviews/${id}`, token, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as any).error || "Failed to update review");
+  }
+  return res.json();
+};
+
+
+export const deleteReview = async (id: string, token: string): Promise<void> => {
+  const res = await authFetch(`${API_URL}/api/reviews/${id}`, token, { method: "DELETE" });
+  if (!res.ok) throw new Error("Failed to delete review");
+};
+
+export const fetchServices = async (): Promise<Service[]> => {
+  const res = await fetch(`${API_URL}/api/services`);
+  if (!res.ok) throw new Error("Failed to fetch services");
+  return res.json();
+};
+
+export const createService = async (data: Omit<Service, "_id" | "createdAt" | "updatedAt">, token: string): Promise<Service> => {
+  const res = await authFetch(`${API_URL}/api/services`, token, { method: "POST", body: JSON.stringify(data) });
+  if (!res.ok) throw new Error("Failed to create service");
+  return res.json();
+};
+
+export const updateService = async (id: string, data: Partial<Service>, token: string): Promise<Service> => {
+  const res = await authFetch(`${API_URL}/api/services/${id}`, token, { method: "PUT", body: JSON.stringify(data) });
+  if (!res.ok) throw new Error("Failed to update service");
+  return res.json();
+};
+
+export const deleteService = async (id: string, token: string): Promise<void> => {
+  const res = await authFetch(`${API_URL}/api/services/${id}`, token, { method: "DELETE" });
+  if (!res.ok) throw new Error("Failed to delete service");
+};
+
+
+

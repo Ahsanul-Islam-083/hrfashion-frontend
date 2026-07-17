@@ -3,17 +3,18 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "@/lib/auth-client";
-import { Loader2 } from "lucide-react";
+import { signIn, authClient } from "@/lib/auth-client";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const callbackUrl = searchParams.get("callbackUrl");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
@@ -36,7 +37,13 @@ function LoginForm() {
       }
       
       toast.success("Successfully logged in");
-      router.push(callbackUrl);
+      
+      await authClient.getSession({
+        fetchOptions: { cache: "no-store" } // Force fresh fetch to update navbar
+      });
+      const targetUrl = callbackUrl || "/";
+      
+      router.push(targetUrl);
       router.refresh();
     } catch (err: any) {
       toast.error(err.message || "An unexpected error occurred");
@@ -47,7 +54,7 @@ function LoginForm() {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     try {
-      const { error } = await signIn.social({ provider: "google", callbackURL: callbackUrl });
+      const { error } = await signIn.social({ provider: "google", callbackURL: callbackUrl || "/" });
       if (error) {
         toast.error(error.message || "Failed to sign in with Google");
         setIsGoogleLoading(false);
@@ -82,13 +89,22 @@ function LoginForm() {
             <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Password</label>
             <Link href="#" className="text-xs text-neutral-500 hover:text-foreground underline underline-offset-4">Forgot?</Link>
           </div>
-          <input 
-            type="password" 
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground transition-colors"
-          />
+          <div className="relative">
+            <input 
+              type={showPassword ? "text" : "password"}
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground transition-colors pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-foreground transition-colors"
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
 
         <button 

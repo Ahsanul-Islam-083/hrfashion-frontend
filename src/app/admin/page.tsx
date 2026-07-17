@@ -5,12 +5,13 @@ import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveCo
 import { Package, Briefcase, FileText, Users } from "lucide-react";
 import { fetchAnalyticsOverview } from "@/lib/api";
 import { getToken } from "@/lib/auth-client";
+import { QUERY_KEYS } from "@/lib/queryKeys";
 
 const STATUS_COLORS: Record<string, string> = { pending: "#eab308", accepted: "#22c55e", rejected: "#ef4444" };
 
 export default function AdminOverviewPage() {
   const { data, isLoading } = useQuery({
-    queryKey: ["analytics-overview"],
+    queryKey: QUERY_KEYS.admin.overview(),
     queryFn: async () => {
       const token = await getToken();
       if (!token) throw new Error("No token");

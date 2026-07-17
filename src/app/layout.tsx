@@ -18,8 +18,9 @@ export const metadata: Metadata = {
 };
 
 import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
+import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 import { Providers } from "@/components/providers";
+import { Toaster } from "sonner";
 
 export default function RootLayout({
   children,
@@ -32,7 +33,8 @@ export default function RootLayout({
         <Providers>
           <Navbar />
           {children}
-          <Footer />
+          <ConditionalFooter />
+          <Toaster richColors position="top-right" />
         </Providers>
       </body>
     </html>

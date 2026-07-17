@@ -5,10 +5,11 @@ import Link from "next/link";
 import { fetchMyApplications } from "@/lib/api";
 import { getToken } from "@/lib/auth-client";
 import { Briefcase } from "lucide-react";
+import { QUERY_KEYS } from "@/lib/queryKeys";
 
 export default function MyApplicationsPage() {
   const { data: applications, isLoading } = useQuery({
-    queryKey: ["my-applications"],
+    queryKey: QUERY_KEYS.applications(),
     queryFn: async () => {
       const token = await getToken();
       if (!token) throw new Error("No token");

@@ -5,10 +5,11 @@ import Link from "next/link";
 import { ArrowRight, FileText, Heart, Clock } from "lucide-react";
 import { fetchMyApplications, fetchWishlist } from "@/lib/api";
 import { getToken } from "@/lib/auth-client";
+import { QUERY_KEYS } from "@/lib/queryKeys";
 
 export default function DashboardOverviewPage() {
   const { data: applications, isLoading: isAppsLoading } = useQuery({
-    queryKey: ["my-applications"],
+    queryKey: QUERY_KEYS.applications(),
     queryFn: async () => {
       const token = await getToken();
       if (!token) throw new Error("No token");
@@ -17,7 +18,7 @@ export default function DashboardOverviewPage() {
   });
 
   const { data: wishlist, isLoading: isWishlistLoading } = useQuery({
-    queryKey: ["wishlist"],
+    queryKey: QUERY_KEYS.wishlist(),
     queryFn: async () => {
       const token = await getToken();
       if (!token) throw new Error("No token");
