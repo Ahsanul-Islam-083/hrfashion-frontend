@@ -4,11 +4,14 @@ import Link from "next/link";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/ui/PageMotion";
 
 const CATEGORIES = [
-  { name: "Women's", image: "https://images.unsplash.com/photo-1550614000-4b95d466f28d?auto=format&fit=crop&q=80&w=800", link: "/collections?category=Women%27s+Clothing" },
-  { name: "Men's", image: "https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&q=80&w=800", link: "/collections?category=Men%27s+Clothing" },
-  { name: "Accessories", image: "https://images.unsplash.com/photo-1509631179647-0c114314058f?auto=format&fit=crop&q=80&w=800", link: "/collections?category=Accessories" },
-  { name: "New Arrivals", image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=800", link: "/collections?sort=newest" },
+  { name: "Women's", image: "https://i.ibb.co.com/Y7Bgb5Ym/whomens.avif", link: "/collections?category=Women%27s+Clothing" },
+  { name: "Men's", image: "https://i.ibb.co.com/tMJzks00/Mens.avif", link: "/collections?category=Men%27s+Clothing" },
+  { name: "Accessories", image: "https://i.ibb.co.com/QFdHFC2m/accesory.avif", link: "/collections?category=Accessories" },
+  { name: "New Arrivals", image: "https://i.ibb.co.com/sJmwccfz/New.avif", link: "/collections?sort=newest" },
 ];
+
+
+
 
 export function Categories() {
   return (
@@ -22,14 +25,14 @@ export function Categories() {
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {CATEGORIES.map((cat, idx) => (
             <StaggerItem key={idx}>
-              <Link href={cat.link} className="group relative h-[400px] overflow-hidden block rounded-sm">
+              <Link href={cat.link} className="group relative h-[400px] overflow-hidden block rounded-sm hover:shadow-xl transition-shadow duration-[600ms]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={cat.image}
                   alt={cat.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[600ms] ease-out transform-gpu"
                 />
-                <div className="absolute inset-0 bg-black/25 group-hover:bg-black/40 transition-colors duration-700 ease-out" />
+                <div className="absolute inset-0 bg-black/25 group-hover:bg-black/40 transition-colors duration-[600ms]" />
                 <div className="absolute inset-0 flex items-end justify-start p-6">
                   <span className="text-white text-xl font-serif tracking-wide">{cat.name}</span>
                 </div>

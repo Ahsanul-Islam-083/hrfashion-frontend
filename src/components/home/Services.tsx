@@ -55,8 +55,8 @@ export function Services() {
       <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
         {items.map((service, idx) => (
           <StaggerItem key={"_id" in service ? service._id : idx}>
-            <div className="group bg-card p-8 rounded-sm border border-card-border hover:border-accent/30 hover:shadow-md transition-all duration-700 ease-out h-full">
-              <div className="w-12 h-12 bg-accent text-pure-white flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-1000 ease-out rounded-sm">
+            <div className="group bg-card p-8 rounded-sm border border-card-border overflow-hidden hover:shadow-xl transition-shadow duration-[600ms] h-full">
+              <div className="w-12 h-12 bg-accent text-pure-white flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-[600ms] ease-out transform-gpu rounded-sm">
                 <ServiceIcon name={service.icon} />
               </div>
               <h3 className="font-medium text-lg mb-3">{service.title}</h3>
@@ -69,7 +69,7 @@ export function Services() {
       <ScrollReveal className="text-center">
         <Link
           href="/contact"
-          className="inline-flex items-center justify-center px-8 py-4 border border-card-border text-sm font-medium uppercase tracking-widest hover:border-accent/50 hover:text-accent transition-colors duration-700 ease-out rounded-sm"
+          className="inline-flex items-center justify-center px-8 py-4 border border-card-border text-sm font-medium uppercase tracking-widest hover:opacity-90 transition-opacity rounded-sm"
         >
           Inquire for Manufacturing
         </Link>

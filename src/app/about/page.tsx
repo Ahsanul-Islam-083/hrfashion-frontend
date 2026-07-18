@@ -10,12 +10,12 @@ import { PageMotion, ScrollReveal } from "@/components/ui/PageMotion";
 // ---- Team Card ----
 function TeamMemberCard({ member }: { member: TeamMember }) {
   return (
-    <div className="group flex flex-col bg-card border border-card-border rounded-sm overflow-hidden hover:border-accent/30 transition-colors duration-700 ease-out">
+    <div className="group flex flex-col bg-card border border-card-border rounded-sm overflow-hidden hover:shadow-xl transition-shadow duration-[600ms]">
       <div className="aspect-[4/5] overflow-hidden bg-card">
         <img
           src={member.image}
           alt={member.name}
-          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-[filter] duration-700 ease-out"
+          className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-[600ms] ease-out transform-gpu"
         />
       </div>
       <div className="p-5 flex-1 flex flex-col">
@@ -86,7 +86,7 @@ export default function AboutPage() {
         {/* ---- HERO ---- */}
         <section className="relative h-[60vh] min-h-[420px] flex items-end overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&auto=format&fit=crop&q=80"
+            src="https://i.ibb.co.com/MQ0Wbwt/about-Bn.avif"
             alt="HR Fashion atelier"
             className="absolute inset-0 w-full h-full object-cover opacity-40"
           />
@@ -129,21 +129,24 @@ export default function AboutPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="aspect-[3/4] rounded-sm overflow-hidden row-span-2">
                   <img
-                    src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=800&auto=format&fit=crop&q=80"
+                    src="https://i.ibb.co.com/QvkFt8x5/About1.avif"
                     alt="Textile craftsmanship"
                     className="w-full h-full object-cover"
                   />
                 </div>
+                
+
+
                 <div className="aspect-[3/2] rounded-sm overflow-hidden">
                   <img
-                    src="https://images.unsplash.com/photo-1620799140188-3b2a02fd9a77?w=800&auto=format&fit=crop&q=80"
+                    src="https://i.ibb.co.com/R4czphSB/About2.avif"
                     alt="Garment production"
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="aspect-[3/2] rounded-sm overflow-hidden">
                   <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&auto=format&fit=crop&q=80"
+                    src="https://i.ibb.co.com/JwcpxjL8/About3.avif"
                     alt="Fashion design process"
                     className="w-full h-full object-cover"
                   />

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Menu, X, User, ShoppingBag, LayoutDashboard, LogOut, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -31,6 +31,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
   const router = useRouter();
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -76,9 +77,10 @@ export function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex space-x-8 items-center text-sm font-medium tracking-wide">
-            <Link href="/" className="hover:text-muted transition-colors">Home</Link>
-            <Link href="/collections" className="hover:text-muted transition-colors">Collections</Link>
-            <Link href="/careers" className="hover:text-muted transition-colors">Careers</Link>
+            <Link href="/" className={`hover:text-muted transition-colors ${pathname === "/" ? "text-accent font-semibold border-b-2 border-accent pb-0.5" : ""}`}>Home</Link>
+            <Link href="/collections" className={`hover:text-muted transition-colors ${pathname.startsWith("/collections") ? "text-accent font-semibold border-b-2 border-accent pb-0.5" : ""}`}>Collections</Link>
+            <Link href="/about" className={`hover:text-muted transition-colors ${pathname === "/about" ? "text-accent font-semibold border-b-2 border-accent pb-0.5" : ""}`}>About Us</Link>
+            <Link href="/careers" className={`hover:text-muted transition-colors ${pathname.startsWith("/careers") ? "text-accent font-semibold border-b-2 border-accent pb-0.5" : ""}`}>Careers</Link>
           </div>
 
           <div className="hidden md:flex items-center space-x-2 text-sm">
@@ -158,9 +160,9 @@ export function Navbar() {
             className="md:hidden border-t border-card-border bg-background"
           >
             <div className="px-4 pt-2 pb-6 space-y-4 flex flex-col">
-              <Link href="/" onClick={toggleMenu} className="block py-2 text-lg">Home</Link>
-              <Link href="/collections" onClick={toggleMenu} className="block py-2 text-lg">Collections</Link>
-              <Link href="/careers" onClick={toggleMenu} className="block py-2 text-lg">Careers</Link>
+              <Link href="/" onClick={toggleMenu} className={`block py-2 text-lg ${pathname === "/" ? "text-accent font-semibold" : ""}`}>Home</Link>
+              <Link href="/collections" onClick={toggleMenu} className={`block py-2 text-lg ${pathname.startsWith("/collections") ? "text-accent font-semibold" : ""}`}>Collections</Link>
+              <Link href="/careers" onClick={toggleMenu} className={`block py-2 text-lg ${pathname.startsWith("/careers") ? "text-accent font-semibold" : ""}`}>Careers</Link>
 
               <div className="pt-4 border-t border-card-border flex flex-col gap-4">
                 {session ? (

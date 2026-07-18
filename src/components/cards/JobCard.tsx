@@ -19,7 +19,7 @@ export function JobCard({
   description,
 }: JobCardProps) {
   return (
-    <div className="group flex flex-col bg-background rounded-sm border border-card-border p-6 hover:border-accent/30 transition-colors duration-700 ease-out">
+    <div className="group flex flex-col bg-background rounded-sm border border-card-border p-6 hover:shadow-xl transition-shadow duration-[600ms]">
       <div className="flex justify-between items-start mb-2">
         <h3 className="font-serif text-xl line-clamp-1">{title}</h3>
         <span className="px-2 py-1 bg-card text-xs font-medium uppercase tracking-widest rounded-sm whitespace-nowrap">
@@ -39,7 +39,7 @@ export function JobCard({
       <div className="pt-4 border-t border-card-border mt-auto">
         <Link 
           href={`/careers/${_id}`}
-          className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest hover:text-muted transition-colors duration-700 ease-out"
+          className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest hover:opacity-90 transition-opacity"
         >
           View Details <ArrowRight className="w-3 h-3" />
         </Link>

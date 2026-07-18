@@ -24,7 +24,7 @@ export function FeaturedCollections() {
             <h2 className="text-3xl font-serif mb-3">Featured Pieces</h2>
             <p className="text-muted">Curated selection from our latest arrivals.</p>
           </div>
-          <Link href="/collections" className="hidden sm:flex items-center gap-2 text-sm font-medium hover:text-accent transition-colors duration-700 ease-out uppercase tracking-widest">
+          <Link href="/collections" className="hidden sm:flex items-center gap-2 text-sm font-medium hover:opacity-90 transition-opacity uppercase tracking-widest">
             View All <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -43,14 +43,14 @@ export function FeaturedCollections() {
           {products.map((product) => (
             <StaggerItem key={product._id}>
               <Link href={`/collections/${product._id}`} className="group block">
-                <div className="aspect-[3/4] bg-card mb-4 overflow-hidden rounded-sm relative border border-card-border group-hover:border-accent/30 transition-colors duration-700 ease-out">
+                <div className="aspect-[3/4] bg-card mb-4 overflow-hidden rounded-sm relative border border-card-border hover:shadow-xl transition-shadow duration-[600ms]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={product.images[0] || "https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&q=80&w=800"}
                     alt={product.title}
-                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-1000 ease-out"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-[600ms] ease-out transform-gpu"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-out" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-[600ms]" />
                 </div>
                 <div className="flex justify-between items-start">
                   <div>
@@ -70,7 +70,7 @@ export function FeaturedCollections() {
       )}
 
       <div className="mt-12 text-center sm:hidden">
-        <Link href="/collections" className="inline-flex items-center justify-center w-full py-4 border border-card-border text-sm font-medium uppercase tracking-widest hover:border-accent/50 transition-colors duration-700 ease-out">
+        <Link href="/collections" className="inline-flex items-center justify-center w-full py-4 border border-card-border text-sm font-medium uppercase tracking-widest hover:opacity-90 transition-opacity">
           View All Collection
         </Link>
       </div>

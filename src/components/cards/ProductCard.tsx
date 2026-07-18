@@ -42,7 +42,7 @@ export function ProductCard({
   featured,
 }: ProductCardProps) {
   return (
-    <div className="group flex flex-col bg-card rounded-sm border border-card-border overflow-hidden hover:border-accent/40 hover:shadow-lg transition-all duration-700 ease-out">
+    <div className="group flex flex-col bg-card rounded-sm border border-card-border overflow-hidden hover:shadow-xl transition-shadow duration-[600ms]">
       {/* Image container */}
       <Link href={`/collections/${_id}`} className="block relative aspect-[3/4] bg-background overflow-hidden">
         {/* Featured ribbon */}
@@ -56,12 +56,12 @@ export function ProductCard({
         <img
           src={images[0] || "https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&q=80&w=800"}
           alt={title}
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-1000 ease-out"
+          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-[600ms] ease-out transform-gpu"
         />
 
         {/* Hover overlay with View Details CTA */}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 ease-out flex items-end justify-center pb-6">
-          <span className="px-5 py-2.5 bg-pure-white text-ink text-xs font-semibold uppercase tracking-widest rounded-sm transform translate-y-3 group-hover:translate-y-0 transition-transform duration-700 ease-out">
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-[600ms] flex items-end justify-center pb-6">
+          <span className="px-5 py-2.5 bg-pure-white text-ink text-xs font-semibold uppercase tracking-widest rounded-sm transform translate-y-3 group-hover:translate-y-0 duration-[600ms] hover:opacity-90 transition-opacity">
             View Details
           </span>
         </div>
