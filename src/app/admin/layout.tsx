@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, Briefcase, FileText, Users, LogOut, Wrench } from "lucide-react";
+import { LayoutDashboard, Package, Briefcase, FileText, Users, LogOut, Wrench, Users2 } from "lucide-react";
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,6 +14,7 @@ const navigation = [
   { name: "Applications", href: "/admin/applications", icon: FileText },
   { name: "Users", href: "/admin/users", icon: Users },
   { name: "Services", href: "/admin/services", icon: Wrench },
+  { name: "Team", href: "/admin/team", icon: Users2 },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -27,10 +28,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)] bg-neutral-50 dark:bg-neutral-950">
-      <div className="hidden md:flex w-64 flex-col fixed top-[64px] h-[calc(100vh-64px)] bg-background border-r border-neutral-200 dark:border-neutral-800">
-        <div className="p-6 border-b border-neutral-200 dark:border-neutral-800">
-          <p className="text-xs font-medium uppercase tracking-widest text-neutral-500 mb-1">Admin Panel</p>
+    <div className="flex min-h-[calc(100vh-64px)] bg-background">
+      <div className="hidden md:flex w-64 flex-col fixed top-[64px] h-[calc(100vh-64px)] bg-background border-r border-card-border">
+        <div className="p-6 border-b border-card-border">
+          <p className="text-xs font-medium uppercase tracking-widest text-muted mb-1">Admin Panel</p>
           <p className="font-medium text-sm truncate">{session?.user?.name}</p>
         </div>
 
@@ -43,17 +44,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 key={item.name}
                 href={item.href}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium transition-colors
-                  ${isActive ? "bg-neutral-100 dark:bg-neutral-900 text-foreground" : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-900 hover:text-foreground"}`}
+                  ${isActive ? "bg-card text-foreground" : "text-muted hover:bg-card hover:text-foreground"}`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? "text-foreground" : "text-neutral-400"}`} />
+                <Icon className={`w-4 h-4 ${isActive ? "text-foreground" : "text-muted"}`} />
                 {item.name}
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t border-neutral-200 dark:border-neutral-800">
-          <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 text-sm text-neutral-500 hover:text-foreground transition-colors mb-1">
+        <div className="p-4 border-t border-card-border">
+          <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted hover:text-foreground transition-colors mb-1">
             ← User Dashboard
           </Link>
           <button

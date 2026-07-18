@@ -3,7 +3,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 export interface Product {
   _id: string;
   title: string;
-  slug: string;
   shortDescription: string;
   fullDescription: string;
   price: number;
@@ -101,7 +100,7 @@ export interface Service {
 
 export const fetchProducts = async (params: URLSearchParams | string): Promise<ProductsResponse> => {
   const query = typeof params === "string" ? params : params.toString();
-  const res = await fetch(`${API_URL}/api/products?${query}`, { next: { revalidate: 60 } });
+  const res = await fetch(`${API_URL}/api/products?${query}`);
   if (!res.ok) throw new Error("Failed to fetch products");
   return res.json();
 };
@@ -115,7 +114,7 @@ export const fetchProductById = async (id: string): Promise<Product | null> => {
 
 export const fetchJobs = async (params: URLSearchParams | string): Promise<JobsResponse> => {
   const query = typeof params === "string" ? params : params.toString();
-  const res = await fetch(`${API_URL}/api/careers?${query}`, { next: { revalidate: 60 } });
+  const res = await fetch(`${API_URL}/api/careers?${query}`);
   if (!res.ok) throw new Error("Failed to fetch jobs");
   return res.json();
 };
@@ -373,5 +372,130 @@ export const deleteService = async (id: string, token: string): Promise<void> =>
   if (!res.ok) throw new Error("Failed to delete service");
 };
 
+export interface TeamMember {
+  _id: string;
+  name: string;
+  designation: string;
+  description: string;
+  image: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
+export const fetchTeam = async (): Promise<TeamMember[]> => {
+  const res = await fetch(`${API_URL}/api/team`);
+  if (!res.ok) throw new Error("Failed to fetch team members");
+  return res.json();
+};
 
+export const createTeamMember = async (data: Omit<TeamMember, "_id" | "createdAt" | "updatedAt">, token: string): Promise<TeamMember> => {
+  const res = await authFetch(`${API_URL}/api/team`, token, { method: "POST", body: JSON.stringify(data) });
+  if (!res.ok) throw new Error("Failed to create team member");
+  return res.json();
+};
+
+export const updateTeamMember = async (id: string, data: Partial<TeamMember>, token: string): Promise<TeamMember> => {
+  const res = await authFetch(`${API_URL}/api/team/${id}`, token, { method: "PUT", body: JSON.stringify(data) });
+  if (!res.ok) throw new Error("Failed to update team member");
+  return res.json();
+};
+
+export const deleteTeamMember = async (id: string, token: string): Promise<void> => {
+  const res = await authFetch(`${API_URL}/api/team/${id}`, token, { method: "DELETE" });
+  if (!res.ok) throw new Error("Failed to delete team member");
+};
+
+export interface ChatMessage {
+  _id: string;
+  userId: string;
+  role: "user" | "assistant";
+  content: string;
+  createdAt: string;
+  sessionId?: string;
+}
+
+export const fetchChatHistory = async (token: string): Promise<{ messages: ChatMessage[] }> => {
+  const res = await authFetch(`${API_URL}/api/ai/chat/history`, token);
+  if (!res.ok) throw new Error("Failed to fetch chat history");
+  return res.json();
+};
+
+export const sendChatMessage = async (message: string, token: string): Promise<{ reply: string }> => {
+  const res = await authFetch(`${API_URL}/api/ai/chat`, token, {
+    method: "POST",
+    body: JSON.stringify({ message }),
+  });
+  if (!res.ok) throw new Error("Failed to send message");
+  return res.json();
+};
+
+export interface Interview {
+  _id: string;
+  applicationId: string;
+  jobId: string;
+  userId: string;
+  questions: { id: string; question: string; category: "interpersonal" | "skill" }[];
+  answers: { questionId: string; answer: string }[];
+  status: "pending" | "in_progress" | "completed";
+  score: number | null;
+  feedback: string | null;
+  createdAt: string;
+  completedAt?: string;
+  jobTitle?: string;
+  applicantName?: string;
+  email?: string;
+}
+
+export const generateInterview = async (applicationId: string, token: string): Promise<Interview> => {
+  const res = await authFetch(`${API_URL}/api/interviews/generate`, token, {
+    method: "POST",
+    body: JSON.stringify({ applicationId }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "Failed to generate interview");
+  }
+  return res.json();
+};
+
+export const submitInterview = async (
+  interviewId: string,
+  answers: { questionId: string; answer: string }[],
+  token: string
+): Promise<Interview> => {
+  const res = await authFetch(`${API_URL}/api/interviews/${interviewId}/submit`, token, {
+    method: "POST",
+    body: JSON.stringify({ answers }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "Failed to submit interview");
+  }
+  return res.json();
+};
+
+export const fetchMyInterviews = async (token: string): Promise<{ interviews: Interview[] }> => {
+  const res = await authFetch(`${API_URL}/api/interviews/mine`, token);
+  if (!res.ok) throw new Error("Failed to fetch interviews");
+  return res.json();
+};
+
+export const fetchInterviewByApplication = async (applicationId: string, token: string): Promise<Interview | null> => {
+  const res = await authFetch(`${API_URL}/api/interviews/application/${applicationId}`, token);
+  if (!res.ok) throw new Error("Failed to fetch interview");
+  return res.json();
+};
+
+export const fetchInterviewsAdmin = async (token: string, statusFilter?: string): Promise<{ interviews: Interview[] }> => {
+  const params = statusFilter ? `?status=${statusFilter}` : "";
+  const res = await authFetch(`${API_URL}/api/interviews${params}`, token);
+  if (!res.ok) throw new Error("Failed to fetch interviews");
+  return res.json();
+};
+
+export const fetchRecommendations = async (token: string): Promise<{ recommendations: { product: Product, reason: string }[], reason?: "empty_wishlist" }> => {
+  const res = await authFetch(`${API_URL}/api/recommendations`, token);
+  if (!res.ok) throw new Error("Failed to fetch recommendations");
+  return res.json();
+};

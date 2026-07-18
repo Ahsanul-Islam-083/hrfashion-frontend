@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { Package, Briefcase, FileText, Users } from "lucide-react";
 import { fetchAnalyticsOverview } from "@/lib/api";
 import { getToken } from "@/lib/auth-client";
@@ -78,12 +78,13 @@ export default function AdminOverviewPage() {
           <h2 className="text-sm font-medium uppercase tracking-widest mb-6">Applications Distribution</h2>
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
-              <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} dataKey="value" paddingAngle={3} label={({ name, value }) => `${name}: ${value}`} labelLine={false}>
+              <Pie data={pieData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} dataKey="value" paddingAngle={3} labelLine={false}>
                 {pieData.map((entry, index) => (
                   <Cell key={index} fill={STATUS_COLORS[entry.name.toLowerCase()] || "#94a3b8"} />
                 ))}
               </Pie>
               <Tooltip />
+              <Legend verticalAlign="bottom" height={36} />
             </PieChart>
           </ResponsiveContainer>
         </div>

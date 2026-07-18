@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { LayoutDashboard, FileText, Heart, Bot, Settings, LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, FileText, Heart, Bot, Settings, LogOut, Menu, X, ClipboardList } from "lucide-react";
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const navigation = [
   { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { name: "My Applications", href: "/dashboard/applications", icon: FileText },
+  { name: "Interviews", href: "/dashboard/interviews", icon: ClipboardList },
   { name: "Wishlist", href: "/dashboard/wishlist", icon: Heart },
   { name: "AI Assistant", href: "/dashboard/ai-assistant", icon: Bot },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
@@ -28,12 +29,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)] bg-neutral-50 dark:bg-neutral-950">
+    <div className="flex min-h-[calc(100vh-64px)] bg-background">
       {/* Mobile sidebar toggle */}
       <div className="md:hidden fixed top-20 left-4 z-40">
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-2 bg-background border border-neutral-200 dark:border-neutral-800 rounded-sm shadow-sm"
+          className="p-2 bg-background border border-card-border rounded-sm shadow-sm"
         >
           {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
@@ -43,14 +44,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className={`
         fixed md:sticky top-0 md:top-[64px] z-30
         w-64 h-[100vh] md:h-[calc(100vh-64px)] 
-        bg-background border-r border-neutral-200 dark:border-neutral-800 
+        bg-background border-r border-card-border 
         transition-transform duration-300 ease-in-out
         ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         flex flex-col
       `}>
-        <div className="p-6 border-b border-neutral-200 dark:border-neutral-800">
+        <div className="p-6 border-b border-card-border">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center font-medium uppercase overflow-hidden">
+            <div className="w-10 h-10 rounded-full bg-card flex items-center justify-center font-medium uppercase overflow-hidden">
               {session?.user?.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={session.user.image} alt={session.user.name} className="w-full h-full object-cover" />
@@ -60,7 +61,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
             <div className="overflow-hidden">
               <p className="font-medium text-sm truncate">{session?.user?.name}</p>
-              <p className="text-xs text-neutral-500 truncate">{session?.user?.email}</p>
+              <p className="text-xs text-muted truncate">{session?.user?.email}</p>
             </div>
           </div>
         </div>
@@ -78,18 +79,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 className={`
                   flex items-center gap-3 px-3 py-2.5 rounded-sm text-sm font-medium transition-colors
                   ${isActive 
-                    ? "bg-neutral-100 dark:bg-neutral-900 text-foreground" 
-                    : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-900 hover:text-foreground"}
+                    ? "bg-card text-foreground" 
+                    : "text-muted hover:bg-card hover:text-foreground"}
                 `}
               >
-                <Icon className={`w-4 h-4 ${isActive ? "text-foreground" : "text-neutral-400"}`} />
+                <Icon className={`w-4 h-4 ${isActive ? "text-foreground" : "text-muted"}`} />
                 {item.name}
               </Link>
             );
           })}
         </nav>
 
-        <div className="p-4 border-t border-neutral-200 dark:border-neutral-800">
+        <div className="p-4 border-t border-card-border">
           <button 
             onClick={handleSignOut}
             className="flex items-center gap-3 px-3 py-2.5 w-full rounded-sm text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"

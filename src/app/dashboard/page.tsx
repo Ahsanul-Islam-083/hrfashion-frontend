@@ -6,6 +6,7 @@ import { ArrowRight, FileText, Heart, Clock } from "lucide-react";
 import { fetchMyApplications, fetchWishlist } from "@/lib/api";
 import { getToken } from "@/lib/auth-client";
 import { QUERY_KEYS } from "@/lib/queryKeys";
+import { RecommendationsSection } from "@/components/product/RecommendationsSection";
 
 export default function DashboardOverviewPage() {
   const { data: applications, isLoading: isAppsLoading } = useQuery({
@@ -106,6 +107,8 @@ export default function DashboardOverviewPage() {
           )}
         </div>
       </div>
+
+      <RecommendationsSection />
     </div>
   );
 }

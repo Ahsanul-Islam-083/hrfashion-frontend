@@ -1,32 +1,86 @@
 "use client";
 
-import { useState } from "react";
-import { Send, Bot, User } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Send, Bot, User, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { fetchChatHistory, sendChatMessage, type ChatMessage } from "@/lib/api";
+import { getToken } from "@/lib/auth-client";
+
+const SUGGESTED_PROMPTS = [
+  "Show me summer collection pieces",
+  "Any open jobs in Sales?",
+  "What manufacturing services do you offer?",
+];
 
 export default function AiAssistantPage() {
+  const queryClient = useQueryClient();
   const [message, setMessage] = useState("");
-  
-  // Static placeholder state for UI purposes
-  const [chatLog, setChatLog] = useState([
-    { role: "assistant", content: "Hello! I'm your HR Fashion styling and support assistant. How can I help you today?" }
-  ]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSend = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!message.trim()) return;
-    
-    // Add user message to log
-    setChatLog(prev => [...prev, { role: "user", content: message }]);
-    
-    // TODO: Wire up actual AI streaming logic here in a future task.
-    // e.g. await fetch('/api/ai/chat') and handle ReadableStream response
-    
-    // Temporary stub response for UI purposes
-    setTimeout(() => {
-      setChatLog(prev => [...prev, { role: "assistant", content: "I'm currently operating in offline shell mode. I'll be fully connected to the HR Fashion AI network soon!" }]);
-    }, 1000);
+  const { data, isLoading } = useQuery({
+    queryKey: ["ai-chat-history"],
+    queryFn: async () => {
+      const token = await getToken();
+      if (!token) throw new Error("No token");
+      return fetchChatHistory(token);
+    },
+  });
 
+  const chatLog = data?.messages || [];
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatLog]);
+
+  const sendMutation = useMutation({
+    mutationFn: async (msg: string) => {
+      const token = await getToken();
+      if (!token) throw new Error("No token");
+      return sendChatMessage(msg, token);
+    },
+    onMutate: async (newMsg) => {
+      await queryClient.cancelQueries({ queryKey: ["ai-chat-history"] });
+      const previousData = queryClient.getQueryData<{ messages: ChatMessage[] }>(["ai-chat-history"]);
+      
+      const optimisticUserMsg: ChatMessage = {
+        _id: `temp-${Date.now()}`,
+        userId: "temp",
+        role: "user",
+        content: newMsg,
+        createdAt: new Date().toISOString(),
+      };
+
+      queryClient.setQueryData<{ messages: ChatMessage[] }>(["ai-chat-history"], (old) => {
+        return { messages: [...(old?.messages || []), optimisticUserMsg] };
+      });
+
+      return { previousData };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["ai-chat-history"] });
+    },
+    onError: (err, newMsg, context) => {
+      toast.error("Failed to send message");
+      if (context?.previousData) {
+        queryClient.setQueryData(["ai-chat-history"], context.previousData);
+      }
+    },
+  });
+
+  const handleSend = (msg: string) => {
+    if (!msg.trim() || sendMutation.isPending) return;
     setMessage("");
+    sendMutation.mutate(msg);
+  };
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSend(message);
   };
 
   return (
@@ -39,34 +93,81 @@ export default function AiAssistantPage() {
       <div className="flex-1 bg-background rounded-sm border border-neutral-200 dark:border-neutral-800 flex flex-col overflow-hidden shadow-sm">
         {/* Chat Log Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {chatLog.map((msg, idx) => (
-            <div key={idx} className={`flex gap-4 max-w-[85%] ${msg.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-foreground text-background' : 'bg-neutral-100 dark:bg-neutral-900 text-foreground'}`}>
-                {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-              </div>
-              <div className={`p-4 rounded-sm text-sm leading-relaxed ${msg.role === 'user' ? 'bg-neutral-100 dark:bg-neutral-900 text-foreground' : 'border border-neutral-200 dark:border-neutral-800'}`}>
-                {msg.content}
-              </div>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-full">
+              <Loader2 className="w-6 h-6 animate-spin text-neutral-400" />
             </div>
-          ))}
+          ) : chatLog.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-center max-w-md mx-auto space-y-4">
+              <div className="w-12 h-12 bg-neutral-100 dark:bg-neutral-900 rounded-full flex items-center justify-center mb-2">
+                <Bot className="w-6 h-6 text-foreground" />
+              </div>
+              <h3 className="text-lg font-medium">Welcome to HR Fashion Assistant</h3>
+              <p className="text-sm text-neutral-500">
+                I can help you explore our product collections, learn about our manufacturing services, or browse open career opportunities. What would you like to know?
+              </p>
+            </div>
+          ) : (
+            chatLog.map((msg) => (
+              <div key={msg._id} className={`flex gap-4 max-w-[85%] ${msg.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-foreground text-background' : 'bg-neutral-100 dark:bg-neutral-900 text-foreground'}`}>
+                  {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                </div>
+                <div className={`p-4 rounded-sm text-sm leading-relaxed ${msg.role === 'user' ? 'bg-neutral-100 dark:bg-neutral-900 text-foreground' : 'border border-neutral-200 dark:border-neutral-800'} whitespace-pre-wrap`}>
+                  {msg.content}
+                </div>
+              </div>
+            ))
+          )}
+          
+          {sendMutation.isPending && (
+             <div className="flex gap-4 max-w-[85%]">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-neutral-100 dark:bg-neutral-900 text-foreground">
+                  <Bot className="w-4 h-4" />
+                </div>
+                <div className="p-4 rounded-sm text-sm leading-relaxed border border-neutral-200 dark:border-neutral-800 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                  <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                  <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce"></span>
+                </div>
+              </div>
+          )}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Input Area */}
         <div className="p-4 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50">
-          <form onSubmit={handleSend} className="relative flex items-center max-w-4xl mx-auto">
+          
+          {!isLoading && chatLog.length === 0 && (
+            <div className="flex flex-wrap gap-2 justify-center mb-4 max-w-4xl mx-auto">
+              {SUGGESTED_PROMPTS.map((prompt) => (
+                <button
+                  key={prompt}
+                  onClick={() => handleSend(prompt)}
+                  disabled={sendMutation.isPending}
+                  className="px-3 py-1.5 text-xs bg-background border border-neutral-200 dark:border-neutral-700 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50"
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <form onSubmit={onSubmit} className="relative flex items-center max-w-4xl mx-auto">
             <input 
               type="text" 
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Ask about sizing, styling, or order status..."
-              className="w-full px-6 py-4 pr-16 bg-background border border-neutral-200 dark:border-neutral-800 rounded-full text-sm focus:outline-none focus:border-neutral-400 transition-colors shadow-sm"
+              disabled={sendMutation.isPending}
+              className="w-full px-6 py-4 pr-16 bg-background border border-neutral-200 dark:border-neutral-800 rounded-full text-sm focus:outline-none focus:border-neutral-400 transition-colors shadow-sm disabled:opacity-70 disabled:bg-neutral-50 dark:disabled:bg-neutral-900"
             />
             <button 
               type="submit"
-              disabled={!message.trim()}
-              className="absolute right-2 p-3 bg-foreground text-background rounded-full hover:opacity-90 transition-opacity disabled:opacity-50"
+              disabled={!message.trim() || sendMutation.isPending}
+              className="absolute right-2 p-3 bg-foreground text-background rounded-full hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center min-w-[40px]"
             >
-              <Send className="w-4 h-4" />
+              {sendMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </button>
           </form>
           <div className="text-center mt-3 text-xs text-neutral-500">

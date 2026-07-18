@@ -79,9 +79,8 @@ export default function AdminProductsPage() {
         sizes: sizesRaw.split(",").map((s) => s.trim()).filter(Boolean),
         colors: colorsRaw.split(",").map((s) => s.trim()).filter(Boolean),
       };
-      // do not send slug
-      delete (payload as any).slug;
-      return withToken((t) => product._id ? updateProduct(product._id!, payload, t) : createProduct(payload, t));
+      
+      return withToken((t) => product._id ? updateProduct(product._id!, payload, t) : createProduct(payload as Product, t));
     },
     onSuccess: () => {
       toast.success("Product saved");
@@ -167,12 +166,21 @@ export default function AdminProductsPage() {
               <button onClick={closeModal}><X className="w-5 h-5" /></button>
             </div>
             <div className="p-6 overflow-y-auto space-y-4">
-              {(["title", "category"] as const).map((f) => (
-                <div key={f} className="space-y-1">
-                  <label className="text-xs uppercase tracking-widest font-medium text-neutral-500 capitalize">{f}</label>
-                  <input value={(p[f] as string) || ""} onChange={(e) => setField(f, e.target.value)} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground" />
-                </div>
-              ))}
+              <div className="space-y-1">
+                <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Title</label>
+                <input value={p.title || ""} onChange={(e) => setField("title", e.target.value)} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground" />
+              </div>
+              
+              <div className="space-y-1">
+                <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Category</label>
+                <select value={p.category || ""} onChange={(e) => setField("category", e.target.value)} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground">
+                  <option value="" disabled>Select category...</option>
+                  <option value="Women's Clothing">Women's Clothing</option>
+                  <option value="Men's Clothing">Men's Clothing</option>
+                  <option value="Accessories">Accessories</option>
+                  <option value="New Arrivals">New Arrivals</option>
+                </select>
+              </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">

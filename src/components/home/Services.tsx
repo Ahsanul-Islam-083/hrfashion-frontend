@@ -10,6 +10,7 @@ import {
   type LucideProps,
 } from "lucide-react";
 import type { ElementType } from "react";
+import { ScrollReveal, StaggerContainer, StaggerItem } from "@/components/ui/PageMotion";
 
 const ICON_MAP: Record<string, ElementType<LucideProps>> = {
   Factory, Package, Scissors, ShieldCheck, Truck, Globe,
@@ -44,36 +45,35 @@ export function Services() {
 
   return (
     <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="text-center mb-16">
+      <ScrollReveal className="text-center mb-16">
         <h2 className="text-3xl font-serif mb-4">Our Services</h2>
-        <p className="text-neutral-500 max-w-xl mx-auto">
+        <p className="text-muted max-w-xl mx-auto">
           Beyond retail, HR Fashion is a premier manufacturing partner. We offer comprehensive B2B solutions for the modern garment industry.
         </p>
-      </div>
+      </ScrollReveal>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+      <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
         {items.map((service, idx) => (
-          <div
-            key={"_id" in service ? service._id : idx}
-            className="group bg-neutral-50 dark:bg-neutral-900/50 p-8 rounded-sm border border-transparent hover:border-neutral-200 dark:hover:border-neutral-800 transition-colors"
-          >
-            <div className="w-12 h-12 bg-foreground text-background flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <ServiceIcon name={service.icon} />
+          <StaggerItem key={"_id" in service ? service._id : idx}>
+            <div className="group bg-card p-8 rounded-sm border border-card-border hover:border-accent/30 hover:shadow-md transition-all duration-300 h-full">
+              <div className="w-12 h-12 bg-accent text-pure-white flex items-center justify-center mb-6 group-hover:scale-110 transition-transform rounded-sm">
+                <ServiceIcon name={service.icon} />
+              </div>
+              <h3 className="font-medium text-lg mb-3">{service.title}</h3>
+              <p className="text-sm text-muted leading-relaxed">{service.description}</p>
             </div>
-            <h3 className="font-medium text-lg mb-3">{service.title}</h3>
-            <p className="text-sm text-neutral-500 leading-relaxed">{service.description}</p>
-          </div>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerContainer>
 
-      <div className="text-center">
+      <ScrollReveal className="text-center">
         <Link
           href="/contact"
-          className="inline-flex items-center justify-center px-8 py-4 border border-foreground text-sm font-medium uppercase tracking-widest hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors rounded-sm"
+          className="inline-flex items-center justify-center px-8 py-4 border border-card-border text-sm font-medium uppercase tracking-widest hover:border-accent/50 hover:text-accent transition-colors rounded-sm"
         >
           Inquire for Manufacturing
         </Link>
-      </div>
+      </ScrollReveal>
     </section>
   );
 }
