@@ -9,14 +9,14 @@ import { fetchApplicationsAdmin, updateApplicationStatus, fetchInterviewsAdmin, 
 import { QUERY_KEYS } from "@/lib/queryKeys";
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  accepted: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  rejected: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  pending: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200",
+  accepted: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+  rejected: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
 };
 
 const INTERVIEW_STATUS_STYLES: Record<string, string> = {
-  in_progress: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-  completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  in_progress: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+  completed: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
 };
 
 function InterviewResultsModal({ interview, onClose }: { interview: Interview; onClose: () => void }) {
@@ -192,10 +192,10 @@ export default function AdminApplicationsPage() {
                       <td className="px-5 py-3">
                         {app.status === "pending" ? (
                           <div className="flex items-center gap-2">
-                            <button disabled={pendingAction === app._id} onClick={() => statusMutation.mutate({ id: app._id, status: "accepted" })} className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-green-700 bg-green-100 dark:bg-green-900/30 dark:text-green-400 rounded-sm hover:opacity-80 transition-opacity disabled:opacity-50">
+                            <button disabled={pendingAction === app._id} onClick={() => statusMutation.mutate({ id: app._id, status: "accepted" })} className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-green-800 bg-green-100 dark:bg-green-900 dark:text-green-200 rounded-sm hover:opacity-80 transition-opacity disabled:opacity-50">
                               {pendingAction === app._id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle className="w-3 h-3" />} Accept
                             </button>
-                            <button disabled={pendingAction === app._id} onClick={() => statusMutation.mutate({ id: app._id, status: "rejected" })} className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 dark:bg-red-900/30 dark:text-red-400 rounded-sm hover:opacity-80 transition-opacity disabled:opacity-50">
+                            <button disabled={pendingAction === app._id} onClick={() => statusMutation.mutate({ id: app._id, status: "rejected" })} className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-800 bg-red-100 dark:bg-red-900 dark:text-red-200 rounded-sm hover:opacity-80 transition-opacity disabled:opacity-50">
                               {pendingAction === app._id ? <Loader2 className="w-3 h-3 animate-spin" /> : <XCircle className="w-3 h-3" />} Reject
                             </button>
                           </div>

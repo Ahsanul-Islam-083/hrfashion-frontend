@@ -80,7 +80,7 @@ export default function WishlistPage() {
                 <button
                   onClick={() => removeMutation.mutate(item.product!._id)}
                   disabled={removeMutation.isPending}
-                  className="absolute top-4 right-4 p-2 bg-card/80 backdrop-blur-sm rounded-full text-muted hover:text-red-600 dark:hover:text-red-400 hover:bg-card transition-all opacity-0 group-hover:opacity-100"
+                  className="absolute top-4 right-4 p-2 bg-card/80 backdrop-blur-sm rounded-full text-muted hover:text-red-600 dark:hover:text-red-400 hover:bg-card hover:ring-1 hover:ring-red-500/30 transition-all duration-500 opacity-0 group-hover:opacity-100"
                   title="Remove from wishlist"
                 >
                   <Trash2 className="w-4 h-4" />

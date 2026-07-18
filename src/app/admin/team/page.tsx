@@ -164,8 +164,8 @@ export default function AdminTeamPage() {
                   <td className="px-5 py-3 text-muted max-w-[200px] truncate">{member.designation}</td>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2">
-                      <button onClick={() => openModal(member)} className="p-1.5 hover:bg-foreground/5 rounded-sm transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => setConfirmId(member._id)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-sm transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => openModal(member)} className="p-1.5 border border-transparent hover:border-card-border hover:bg-foreground/10 rounded-sm transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => setConfirmId(member._id)} className="p-1.5 text-red-600 border border-transparent hover:border-red-300 dark:hover:border-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-sm transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </td>
                 </tr>

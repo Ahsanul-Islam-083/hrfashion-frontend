@@ -27,9 +27,9 @@ export function Categories() {
                 <img
                   src={cat.image}
                   alt={cat.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
                 />
-                <div className="absolute inset-0 bg-black/25 group-hover:bg-black/40 transition-colors" />
+                <div className="absolute inset-0 bg-black/25 group-hover:bg-black/40 transition-colors duration-700 ease-out" />
                 <div className="absolute inset-0 flex items-end justify-start p-6">
                   <span className="text-white text-xl font-serif tracking-wide">{cat.name}</span>
                 </div>

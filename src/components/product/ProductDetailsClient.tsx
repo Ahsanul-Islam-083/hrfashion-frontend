@@ -59,7 +59,7 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
           <button
             key={idx}
             onClick={() => jumpTo(idx)}
-            className={`relative aspect-[3/4] w-16 md:w-full flex-shrink-0 rounded-sm overflow-hidden border-2 transition-all ${
+            className={`relative aspect-[3/4] w-16 md:w-full flex-shrink-0 rounded-sm overflow-hidden border-2 transition-all duration-500 ${
               activeImage === idx
                 ? "border-foreground"
                 : "border-transparent opacity-50 hover:opacity-80"
@@ -122,7 +122,7 @@ function ImageCarousel({ images, title }: { images: string[]; title: string }) {
                 <button
                   key={idx}
                   onClick={() => jumpTo(idx)}
-                  className={`rounded-full transition-all ${
+                  className={`rounded-full transition-all duration-500 ${
                     activeImage === idx
                       ? "w-4 h-1.5 bg-foreground"
                       : "w-1.5 h-1.5 bg-foreground/30 hover:bg-foreground/60"

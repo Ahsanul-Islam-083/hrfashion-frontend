@@ -90,7 +90,7 @@ function UsersContent() {
                     </td>
                     <td className="px-5 py-3 text-muted">{user.email}</td>
                     <td className="px-5 py-3">
-                      <span className={`px-2 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest ${user.role === "admin" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" : "bg-card text-muted"}`}>{user.role}</span>
+                      <span className={`px-2 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest ${user.role === "admin" ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200" : "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"}`}>{user.role}</span>
                     </td>
                     <td className="px-5 py-3 text-muted">{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}</td>
                     <td className="px-5 py-3">
@@ -107,7 +107,7 @@ function UsersContent() {
                         <button
                           disabled={isSelf}
                           onClick={() => setConfirmId(user.id)}
-                          className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-sm transition-colors disabled:opacity-50"
+                          className="p-1.5 text-red-600 border border-transparent hover:border-red-300 dark:hover:border-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-sm transition-colors disabled:opacity-50"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

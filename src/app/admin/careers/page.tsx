@@ -82,15 +82,15 @@ export default function AdminCareersPage() {
                   <td className="px-5 py-3 text-muted">{job.location}</td>
                   <td className="px-5 py-3 text-muted capitalize">{job.type.replace("-", " ")}</td>
                   <td className="px-5 py-3">
-                    <span className={`px-2 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest ${job.status === "open" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" : "bg-card text-muted dark:bg-card"}`}>{job.status}</span>
+                    <span className={`px-2 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest ${job.status === "open" ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" : "bg-neutral-200 text-neutral-700 dark:bg-neutral-700 dark:text-neutral-200"}`}>{job.status}</span>
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2">
-                      <button onClick={() => toggleStatus(job)} title={job.status === "open" ? "Close job" : "Reopen job"} className="p-1.5 hover:bg-foreground/5 rounded-sm transition-colors">
+                      <button onClick={() => toggleStatus(job)} title={job.status === "open" ? "Close job" : "Reopen job"} className="p-1.5 border border-transparent hover:border-card-border hover:bg-foreground/10 rounded-sm transition-colors">
                         {job.status === "open" ? <ToggleRight className="w-4 h-4 text-green-500" /> : <ToggleLeft className="w-4 h-4 text-muted" />}
                       </button>
-                      <button onClick={() => openModal(job)} className="p-1.5 hover:bg-foreground/5 rounded-sm"><Pencil className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => setConfirmId(job._id)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-sm"><Trash2 className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => openModal(job)} className="p-1.5 border border-transparent hover:border-card-border hover:bg-foreground/10 rounded-sm"><Pencil className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => setConfirmId(job._id)} className="p-1.5 text-red-600 border border-transparent hover:border-red-300 dark:hover:border-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-sm"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </td>
                 </tr>

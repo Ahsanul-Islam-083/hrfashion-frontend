@@ -10,12 +10,12 @@ import { PageMotion, ScrollReveal } from "@/components/ui/PageMotion";
 // ---- Team Card ----
 function TeamMemberCard({ member }: { member: TeamMember }) {
   return (
-    <div className="group flex flex-col bg-card border border-card-border rounded-sm overflow-hidden hover:border-accent/30 transition-colors duration-300">
+    <div className="group flex flex-col bg-card border border-card-border rounded-sm overflow-hidden hover:border-accent/30 transition-colors duration-700 ease-out">
       <div className="aspect-[4/5] overflow-hidden bg-card">
         <img
           src={member.image}
           alt={member.name}
-          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+          className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-[filter] duration-700 ease-out"
         />
       </div>
       <div className="p-5 flex-1 flex flex-col">

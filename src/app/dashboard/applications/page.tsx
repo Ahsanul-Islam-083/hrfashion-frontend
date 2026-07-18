@@ -44,7 +44,7 @@ export default function MyApplicationsPage() {
       return (
         <button
           onClick={() => setActiveInterview({ applicationId: appId, jobTitle, interview: null })}
-          className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 rounded-sm hover:opacity-80 transition-opacity"
+          className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-800 bg-blue-100 dark:bg-blue-900 dark:text-blue-200 rounded-sm hover:opacity-80 transition-opacity"
         >
           <PlayCircle className="w-3 h-3" /> Start
         </button>
@@ -54,7 +54,7 @@ export default function MyApplicationsPage() {
       return (
         <button
           onClick={() => setActiveInterview({ applicationId: appId, jobTitle, interview })}
-          className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-green-700 bg-green-100 dark:bg-green-900/30 dark:text-green-400 rounded-sm hover:opacity-80 transition-opacity"
+          className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-green-800 bg-green-100 dark:bg-green-900 dark:text-green-200 rounded-sm hover:opacity-80 transition-opacity"
         >
           <Eye className="w-3 h-3" /> {interview.score ?? "—"}/100
         </button>
@@ -63,7 +63,7 @@ export default function MyApplicationsPage() {
     return (
       <button
         onClick={() => setActiveInterview({ applicationId: appId, jobTitle, interview })}
-        className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-yellow-700 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400 rounded-sm hover:opacity-80 transition-opacity"
+        className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-amber-800 bg-amber-100 dark:bg-amber-900 dark:text-amber-200 rounded-sm hover:opacity-80 transition-opacity"
       >
         <PlayCircle className="w-3 h-3" /> Continue
       </button>
@@ -119,9 +119,9 @@ export default function MyApplicationsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className={`px-2.5 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest
-                          ${app.status === 'accepted' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
-                            app.status === 'rejected' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' :
-                            'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'}
+                          ${app.status === 'accepted' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
+                            app.status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
+                            'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'}
                         `}>
                           {app.status}
                         </span>

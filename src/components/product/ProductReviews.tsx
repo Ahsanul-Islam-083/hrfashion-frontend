@@ -28,7 +28,7 @@ function StarSelector({ value, onChange }: { value: number; onChange: (v: number
           onClick={() => onChange(n)}
           onMouseEnter={() => setHovered(n)}
           onMouseLeave={() => setHovered(0)}
-          className="p-0.5 transition-transform hover:scale-110"
+          className="p-0.5 transition-transform duration-500 hover:scale-110"
         >
           <Star
             className={`w-5 h-5 transition-colors ${

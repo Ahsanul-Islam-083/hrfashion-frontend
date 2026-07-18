@@ -146,8 +146,8 @@ export default function AdminProductsPage() {
                   <td className="px-5 py-3">{prod.stock}</td>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2">
-                      <button onClick={() => openModal(prod)} className="p-1.5 hover:bg-foreground/5 rounded-sm transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => setConfirmId(prod._id)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-sm transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => openModal(prod)} className="p-1.5 border border-transparent hover:border-card-border hover:bg-foreground/10 rounded-sm transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
+                      <button onClick={() => setConfirmId(prod._id)} className="p-1.5 text-red-600 border border-transparent hover:border-red-300 dark:hover:border-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-sm transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </td>
                 </tr>
@@ -229,7 +229,7 @@ export default function AdminProductsPage() {
                         <img src={url} alt="" className="w-full h-full object-cover rounded-sm border border-card-border" />
                         <button
                           onClick={() => setImageUrls((prev) => prev.filter((_, j) => j !== i))}
-                          className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                         >
                           <X className="w-3 h-3" />
                         </button>
