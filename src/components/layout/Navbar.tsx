@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
@@ -29,14 +29,40 @@ function ThemeToggle({ className = "" }: { className?: string }) {
 export function Navbar() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsDropdownOpen(false);
+    }
+  }, []);
+
+  const handleEscape = useCallback((event: KeyboardEvent) => {
+    if (event.key === "Escape") setIsDropdownOpen(false);
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [handleClickOutside]);
+
+  useEffect(() => {
+    if (isDropdownOpen) {
+      document.addEventListener("keydown", handleEscape);
+    }
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isDropdownOpen, handleEscape]);
 
   const handleSignOut = async () => {
     await signOut();
     router.push("/");
   };
+
+  const firstName = session?.user?.name?.split(" ")[0];
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-background/85 backdrop-blur-md border-b border-card-border transition-colors">
@@ -58,41 +84,49 @@ export function Navbar() {
           <div className="hidden md:flex items-center space-x-2 text-sm">
             <ThemeToggle />
             {session ? (
-              <div className="relative group">
-                <button className="flex items-center justify-center w-8 h-8 rounded-full bg-card text-xs font-medium uppercase overflow-hidden border border-card-border focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background">
-                  {session.user.image ? (
-                    <img src={session.user.image} alt={session.user.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <span>{session.user.name?.charAt(0)}</span>
-                  )}
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setIsDropdownOpen((prev) => !prev)}
+                  className="flex items-center gap-1 pl-1 pr-3 py-1 rounded-full bg-card border border-card-border focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
+                >
+                  <div className="w-8 h-8 flex items-center justify-center rounded-full overflow-hidden text-xs font-medium uppercase">
+                    {session.user.image ? (
+                      <img src={session.user.image} alt={session.user.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <span>{session.user.name?.charAt(0)}</span>
+                    )}
+                  </div>
+                  <span className="text-sm font-medium text-foreground">{firstName}</span>
                 </button>
-                <div className="absolute right-0 mt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 origin-top-right z-50 pt-2">
-                  <div className="py-2 bg-card border border-card-border rounded-sm shadow-xl">
-                    <div className="px-4 py-3 border-b border-card-border">
-                      <p className="text-sm font-medium text-foreground truncate">{session.user.name}</p>
-                      <p className="text-xs text-muted truncate">{session.user.email}</p>
-                    </div>
-                    <div className="py-1">
-                      {session.user.role === "admin" ? (
-                        <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-muted hover:bg-foreground/5 hover:text-foreground transition-colors">
-                          <LayoutDashboard className="w-4 h-4" />
-                          Admin
-                        </Link>
-                      ) : (
-                        <Link href="/dashboard" className="flex items-center gap-2 px-4 py-2 text-sm text-muted hover:bg-foreground/5 hover:text-foreground transition-colors">
-                          <LayoutDashboard className="w-4 h-4" />
-                          Dashboard
-                        </Link>
-                      )}
-                    </div>
-                    <div className="py-1 border-t border-card-border">
-                      <button onClick={handleSignOut} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
-                        <LogOut className="w-4 h-4" />
-                        Log Out
-                      </button>
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-56 transition-all duration-200 origin-top-right z-50 pt-2">
+                    <div className="py-2 bg-card border border-card-border rounded-sm shadow-xl">
+                      <div className="px-4 py-3 border-b border-card-border">
+                        <p className="text-sm font-medium text-foreground truncate">{session.user.name}</p>
+                        <p className="text-xs text-muted truncate">{session.user.email}</p>
+                      </div>
+                      <div className="py-1">
+                        {session.user.role === "admin" ? (
+                          <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-sm text-muted hover:bg-foreground/5 hover:text-foreground transition-colors">
+                            <LayoutDashboard className="w-4 h-4" />
+                            Admin
+                          </Link>
+                        ) : (
+                          <Link href="/dashboard" className="flex items-center gap-2 px-4 py-2 text-sm text-muted hover:bg-foreground/5 hover:text-foreground transition-colors">
+                            <LayoutDashboard className="w-4 h-4" />
+                            Dashboard
+                          </Link>
+                        )}
+                      </div>
+                      <div className="py-1 border-t border-card-border">
+                        <button onClick={handleSignOut} className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
+                          <LogOut className="w-4 h-4" />
+                          Log Out
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             ) : (
               <div className="flex items-center gap-4 ml-2">
@@ -140,7 +174,7 @@ export function Navbar() {
                         )}
                       </div>
                       <div className="text-center">
-                        <p className="font-medium text-foreground">{session.user.name}</p>
+                        <p className="font-medium text-foreground">{firstName}</p>
                         <p className="text-sm text-muted">{session.user.email}</p>
                       </div>
                     </div>

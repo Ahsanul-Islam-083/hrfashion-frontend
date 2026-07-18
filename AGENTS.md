@@ -32,13 +32,14 @@ No test or typecheck scripts exist. Only verification is lint.
 
 ## Env
 
-No `.env*` files are committed. Create `.env.local` for local development. All `.env*` is gitignored.
+No `.env*` files are committed. Create `.env.local` for local development. Variables required: `MONGODB_URI`, `DATABASE_NAME`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_API_URL`.
 
 ## Source layout
 
 ```
 src/
-└── app/          # Next.js App Router pages & layouts
+  app/              # App Router pages & layouts (auth, admin, dashboard, collections, careers, contact, about, etc.)
+  components/       # UI components (providers, layout, home, product, career, interview modals, cards, skeletons)
+  lib/              # Client helpers (auth.ts server, auth-client.ts client, mongodb.ts, api.ts, queryKeys.ts)
+  proxy.ts          # Middleware: protects /dashboard/* and /admin/* routes via better-auth session check
 ```
-
-Only `src/app/` exists so far (layout, page, globals.css).
