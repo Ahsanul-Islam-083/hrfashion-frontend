@@ -122,13 +122,13 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" role="dialog" aria-modal="true">
-      <div className="bg-background w-full max-w-lg rounded-sm border border-neutral-200 dark:border-neutral-800 shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
-        <div className="flex justify-between items-center p-6 border-b border-neutral-200 dark:border-neutral-800">
+      <div className="bg-background w-full max-w-lg rounded-sm border border-card-border shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="flex justify-between items-center p-6 border-b border-card-border">
           <div>
             <h2 className="text-xl font-serif">Apply for Role</h2>
-            <p className="text-sm text-neutral-500">{jobTitle}</p>
+            <p className="text-sm text-muted">{jobTitle}</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-full transition-colors">
+          <button onClick={onClose} className="p-2 hover:bg-foreground/5 rounded-full transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -140,7 +140,7 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
                 <FileCheck className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-serif mb-3">Application Submitted!</h3>
-              <p className="text-neutral-500 mb-8 max-w-sm">
+              <p className="text-muted mb-8 max-w-sm">
                 Would you like to take the AI interview now to fast-track your application?
               </p>
               
@@ -156,7 +156,7 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
                 </button>
                 <button
                   onClick={onClose}
-                  className="flex-1 px-6 py-3 border border-neutral-200 dark:border-neutral-800 text-sm font-medium uppercase tracking-widest rounded-sm hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
+                  className="flex-1 px-6 py-3 border border-card-border text-sm font-medium uppercase tracking-widest rounded-sm hover:bg-foreground/5 transition-colors"
                 >
                   Later
                 </button>
@@ -167,8 +167,8 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
           <>
             <div className="p-6 overflow-y-auto">
               <form id="apply-form" onSubmit={handleSubmit} className="space-y-4">
-                <div className="px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm">
-                  <span className="text-neutral-500 text-xs uppercase tracking-widest font-medium">Applying for: </span>
+                <div className="px-4 py-3 bg-card border border-card-border rounded-sm text-sm">
+                  <span className="text-muted text-xs uppercase tracking-widest font-medium">Applying for: </span>
                   <span className="font-medium">{jobTitle}</span>
                 </div>
 
@@ -179,7 +179,7 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
                     type="text"
                     value={formData.applicantName}
                     onChange={e => setFormData({ ...formData, applicantName: e.target.value })}
-                    className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground"
+                    className="w-full px-4 py-3 bg-card border border-card-border rounded-sm text-sm focus:outline-none focus:border-foreground"
                   />
                 </div>
 
@@ -191,7 +191,7 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
                       type="email"
                       value={formData.email}
                       onChange={e => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground"
+                      className="w-full px-4 py-3 bg-card border border-card-border rounded-sm text-sm focus:outline-none focus:border-foreground"
                     />
                   </div>
                   <div className="space-y-1">
@@ -201,7 +201,7 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
                       type="tel"
                       value={formData.phone}
                       onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground"
+                      className="w-full px-4 py-3 bg-card border border-card-border rounded-sm text-sm focus:outline-none focus:border-foreground"
                     />
                   </div>
                 </div>
@@ -224,7 +224,7 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
                       <button
                         type="button"
                         onClick={() => { setUploadedFileName(null); setFormData(p => ({ ...p, resumeUrl: "" })); fileInputRef.current?.click(); }}
-                        className="text-xs text-neutral-500 hover:text-foreground ml-2 flex-shrink-0 flex items-center gap-1"
+                        className="text-xs text-muted hover:text-foreground ml-2 flex-shrink-0 flex items-center gap-1"
                       >
                         <FileX className="w-3 h-3" /> Replace
                       </button>
@@ -234,7 +234,7 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={isUploading}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-5 bg-neutral-50 dark:bg-neutral-900 border border-dashed border-neutral-300 dark:border-neutral-700 rounded-sm text-sm text-neutral-500 hover:border-foreground hover:text-foreground transition-colors disabled:opacity-50"
+                      className="w-full flex items-center justify-center gap-2 px-4 py-5 bg-card border border-dashed border-card-border rounded-sm text-sm text-muted hover:border-foreground hover:text-foreground transition-colors disabled:opacity-50"
                     >
                       {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                       {isUploading ? "Uploading..." : "Click to upload (PDF/DOC, max 5MB)"}
@@ -248,17 +248,17 @@ export function ApplyModal({ jobId, jobTitle, isOpen, onClose }: ApplyModalProps
                     rows={4}
                     value={formData.coverLetter}
                     onChange={e => setFormData({ ...formData, coverLetter: e.target.value })}
-                    className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground resize-none"
+                    className="w-full px-4 py-3 bg-card border border-card-border rounded-sm text-sm focus:outline-none focus:border-foreground resize-none"
                   ></textarea>
                 </div>
               </form>
             </div>
 
-            <div className="p-6 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50 flex justify-end gap-3">
+            <div className="p-6 border-t border-card-border bg-card flex justify-end gap-3">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-3 border border-neutral-200 dark:border-neutral-800 text-sm font-medium uppercase tracking-widest rounded-sm hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
+                className="px-6 py-3 border border-card-border text-sm font-medium uppercase tracking-widest rounded-sm hover:bg-foreground/5 transition-colors"
               >
                 Cancel
               </button>

@@ -96,7 +96,7 @@ export default function AdminServicesPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-serif mb-1">Services</h1>
-          <p className="text-neutral-500 text-sm">{services.length} services configured</p>
+          <p className="text-muted text-sm">{services.length} services configured</p>
         </div>
         <button
           onClick={() => openModal()}
@@ -106,36 +106,36 @@ export default function AdminServicesPage() {
         </button>
       </div>
 
-      <div className="bg-background rounded-sm border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+      <div className="bg-background rounded-sm border border-card-border overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="bg-neutral-50 dark:bg-neutral-900/50 border-b border-neutral-200 dark:border-neutral-800">
+            <thead className="bg-card border-b border-card-border">
               <tr>
                 {["Order", "Icon", "Title", "Description", "Actions"].map((h) => (
-                  <th key={h} className="px-5 py-3.5 font-medium uppercase tracking-widest text-xs text-neutral-500">{h}</th>
+                  <th key={h} className="px-5 py-3.5 font-medium uppercase tracking-widest text-xs text-muted">{h}</th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
+            <tbody className="divide-y divide-card-border">
               {isLoading ? (
-                <tr><td colSpan={5} className="px-5 py-10 text-center text-neutral-500">Loading...</td></tr>
+                <tr><td colSpan={5} className="px-5 py-10 text-center text-muted">Loading...</td></tr>
               ) : sorted.length === 0 ? (
-                <tr><td colSpan={5} className="px-5 py-10 text-center text-neutral-500">No services yet. Add one above.</td></tr>
+                <tr><td colSpan={5} className="px-5 py-10 text-center text-muted">No services yet. Add one above.</td></tr>
               ) : sorted.map((svc, idx) => {
                 const IconComp = ICON_OPTIONS.find((o) => o.name === svc.icon)?.icon ?? Wrench;
                 return (
-                  <tr key={svc._id} className="hover:bg-neutral-50 dark:hover:bg-neutral-900/30 transition-colors">
+                  <tr key={svc._id} className="hover:bg-foreground/5 transition-colors">
                     <td className="px-5 py-3">
                       <div className="flex flex-col gap-0.5">
                         <button
                           disabled={idx === 0}
                           onClick={() => swapOrder(idx, idx - 1)}
-                          className="p-0.5 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-30 transition-colors"
+                          className="p-0.5 rounded hover:bg-foreground/5 disabled:opacity-30 transition-colors"
                         ><ChevronUp className="w-3.5 h-3.5" /></button>
                         <button
                           disabled={idx === sorted.length - 1}
                           onClick={() => swapOrder(idx, idx + 1)}
-                          className="p-0.5 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-30 transition-colors"
+                          className="p-0.5 rounded hover:bg-foreground/5 disabled:opacity-30 transition-colors"
                         ><ChevronDown className="w-3.5 h-3.5" /></button>
                       </div>
                     </td>
@@ -145,10 +145,10 @@ export default function AdminServicesPage() {
                       </div>
                     </td>
                     <td className="px-5 py-3 font-medium max-w-[160px] truncate">{svc.title}</td>
-                    <td className="px-5 py-3 text-neutral-500 max-w-[240px] truncate">{svc.description}</td>
+                    <td className="px-5 py-3 text-muted max-w-[240px] truncate">{svc.description}</td>
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2">
-                        <button onClick={() => openModal(svc)} className="p-1.5 hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-sm transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => openModal(svc)} className="p-1.5 hover:bg-foreground/5 rounded-sm transition-colors"><Pencil className="w-3.5 h-3.5" /></button>
                         <button onClick={() => setConfirmId(svc._id)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-sm transition-colors"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </td>
@@ -163,29 +163,29 @@ export default function AdminServicesPage() {
       {/* Service Form Modal */}
       {modal.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-background w-full max-w-lg rounded-sm border border-neutral-200 dark:border-neutral-800 shadow-xl flex flex-col max-h-[90vh]">
-            <div className="flex justify-between items-center p-6 border-b border-neutral-200 dark:border-neutral-800">
+          <div className="bg-background w-full max-w-lg rounded-sm border border-card-border shadow-xl flex flex-col max-h-[90vh]">
+            <div className="flex justify-between items-center p-6 border-b border-card-border">
               <h2 className="text-xl font-serif">{s._id ? "Edit Service" : "New Service"}</h2>
               <button onClick={() => setModal({ open: false, service: EMPTY })}><X className="w-5 h-5" /></button>
             </div>
             <div className="p-6 overflow-y-auto space-y-4">
               <div className="space-y-1">
-                <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Title</label>
-                <input value={s.title || ""} onChange={(e) => setField("title", e.target.value)} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground" />
+                <label className="text-xs uppercase tracking-widest font-medium text-muted">Title</label>
+                <input value={s.title || ""} onChange={(e) => setField("title", e.target.value)} className="w-full px-4 py-2.5 bg-card border border-card-border rounded-sm text-sm focus:outline-none focus:border-foreground" />
               </div>
               <div className="space-y-1">
-                <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Description</label>
-                <textarea rows={3} value={s.description || ""} onChange={(e) => setField("description", e.target.value)} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground resize-none" />
+                <label className="text-xs uppercase tracking-widest font-medium text-muted">Description</label>
+                <textarea rows={3} value={s.description || ""} onChange={(e) => setField("description", e.target.value)} className="w-full px-4 py-2.5 bg-card border border-card-border rounded-sm text-sm focus:outline-none focus:border-foreground resize-none" />
               </div>
               <div className="space-y-1">
-                <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Icon</label>
+                <label className="text-xs uppercase tracking-widest font-medium text-muted">Icon</label>
                 <div className="grid grid-cols-4 gap-2">
                   {ICON_OPTIONS.map(({ name, icon: Icon }) => (
                     <button
                       key={name}
                       type="button"
                       onClick={() => setField("icon", name)}
-                      className={`flex flex-col items-center gap-1.5 p-3 rounded-sm border text-xs transition-colors ${s.icon === name ? "border-foreground bg-foreground text-background" : "border-neutral-200 dark:border-neutral-800 hover:border-neutral-400"}`}
+                      className={`flex flex-col items-center gap-1.5 p-3 rounded-sm border text-xs transition-colors ${s.icon === name ? "border-foreground bg-foreground text-background" : "border-card-border hover:border-muted"}`}
                     >
                       <Icon className="w-4 h-4" />
                       <span className="truncate w-full text-center">{name}</span>
@@ -194,12 +194,12 @@ export default function AdminServicesPage() {
                 </div>
               </div>
               <div className="space-y-1">
-                <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Order</label>
-                <input type="number" value={s.order ?? 1} onChange={(e) => setField("order", parseInt(e.target.value))} className="w-full px-4 py-2.5 bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none" />
+                <label className="text-xs uppercase tracking-widest font-medium text-muted">Order</label>
+                <input type="number" value={s.order ?? 1} onChange={(e) => setField("order", parseInt(e.target.value))} className="w-full px-4 py-2.5 bg-card border border-card-border rounded-sm text-sm focus:outline-none" />
               </div>
             </div>
-            <div className="p-6 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50 flex justify-end gap-3">
-              <button onClick={() => setModal({ open: false, service: EMPTY })} className="px-5 py-2.5 border border-neutral-200 dark:border-neutral-800 text-sm font-medium uppercase tracking-widest rounded-sm hover:bg-neutral-100 dark:hover:bg-neutral-900">Cancel</button>
+            <div className="p-6 border-t border-card-border bg-card flex justify-end gap-3">
+              <button onClick={() => setModal({ open: false, service: EMPTY })} className="px-5 py-2.5 border border-card-border text-sm font-medium uppercase tracking-widest rounded-sm hover:bg-foreground/5">Cancel</button>
               <button onClick={() => saveMutation.mutate(s)} disabled={saveMutation.isPending} className="px-7 py-2.5 bg-foreground text-background text-sm font-medium uppercase tracking-widest rounded-sm hover:opacity-90 flex items-center gap-2 min-w-[100px] justify-center">
                 {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save"}
               </button>
@@ -211,11 +211,11 @@ export default function AdminServicesPage() {
       {/* Confirm Delete */}
       {confirmId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-background w-full max-w-sm rounded-sm border border-neutral-200 dark:border-neutral-800 p-6 space-y-4">
+          <div className="bg-background w-full max-w-sm rounded-sm border border-card-border p-6 space-y-4">
             <h3 className="font-serif text-lg">Delete Service?</h3>
-            <p className="text-sm text-neutral-500">This action cannot be undone.</p>
+            <p className="text-sm text-muted">This action cannot be undone.</p>
             <div className="flex justify-end gap-3">
-              <button onClick={() => setConfirmId(null)} className="px-5 py-2.5 border border-neutral-200 dark:border-neutral-800 text-sm font-medium uppercase tracking-widest rounded-sm hover:bg-neutral-100 dark:hover:bg-neutral-900">Cancel</button>
+              <button onClick={() => setConfirmId(null)} className="px-5 py-2.5 border border-card-border text-sm font-medium uppercase tracking-widest rounded-sm hover:bg-foreground/5">Cancel</button>
               <button onClick={() => deleteMutation.mutate(confirmId!)} disabled={deleteMutation.isPending} className="px-5 py-2.5 bg-red-600 text-white text-sm font-medium uppercase tracking-widest rounded-sm hover:bg-red-700 flex items-center gap-2 min-w-[90px] justify-center">
                 {deleteMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Delete"}
               </button>

@@ -87,15 +87,15 @@ export default function AiAssistantPage() {
     <div className="flex flex-col h-[calc(100vh-140px)] md:h-[calc(100vh-120px)] animate-in fade-in duration-500">
       <div className="mb-6">
         <h1 className="text-3xl font-serif mb-2">AI Assistant</h1>
-        <p className="text-neutral-500">Your personal styling guide and support associate.</p>
+        <p className="text-muted">Your personal styling guide and support associate.</p>
       </div>
 
-      <div className="flex-1 bg-background rounded-sm border border-neutral-200 dark:border-neutral-800 flex flex-col overflow-hidden shadow-sm">
+      <div className="flex-1 bg-background rounded-sm border border-card-border flex flex-col overflow-hidden shadow-sm">
         {/* Chat Log Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {isLoading ? (
             <div className="flex justify-center items-center h-full">
-              <Loader2 className="w-6 h-6 animate-spin text-neutral-400" />
+              <Loader2 className="w-6 h-6 animate-spin text-muted" />
             </div>
           ) : chatLog.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center max-w-md mx-auto space-y-4">
@@ -103,7 +103,7 @@ export default function AiAssistantPage() {
                 <Bot className="w-6 h-6 text-foreground" />
               </div>
               <h3 className="text-lg font-medium">Welcome to HR Fashion Assistant</h3>
-              <p className="text-sm text-neutral-500">
+              <p className="text-sm text-muted">
                 I can help you explore our product collections, learn about our manufacturing services, or browse open career opportunities. What would you like to know?
               </p>
             </div>
@@ -126,9 +126,9 @@ export default function AiAssistantPage() {
                   <Bot className="w-4 h-4" />
                 </div>
                 <div className="p-4 rounded-sm text-sm leading-relaxed bg-card border border-card-border flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                  <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                  <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce"></span>
+                  <span className="w-1.5 h-1.5 bg-muted/30 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                  <span className="w-1.5 h-1.5 bg-muted/30 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                  <span className="w-1.5 h-1.5 bg-muted/30 rounded-full animate-bounce"></span>
                 </div>
               </div>
           )}
@@ -136,7 +136,7 @@ export default function AiAssistantPage() {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50">
+        <div className="p-4 border-t border-card-border bg-card">
           
           {!isLoading && chatLog.length === 0 && (
             <div className="flex flex-wrap gap-2 justify-center mb-4 max-w-4xl mx-auto">
@@ -145,7 +145,7 @@ export default function AiAssistantPage() {
                   key={prompt}
                   onClick={() => handleSend(prompt)}
                   disabled={sendMutation.isPending}
-                  className="px-3 py-1.5 text-xs bg-background border border-neutral-200 dark:border-neutral-700 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-50"
+                  className="px-3 py-1.5 text-xs bg-background border border-card-border rounded-full hover:bg-foreground/5 transition-colors disabled:opacity-50"
                 >
                   {prompt}
                 </button>
@@ -160,7 +160,7 @@ export default function AiAssistantPage() {
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Ask about sizing, styling, or order status..."
               disabled={sendMutation.isPending}
-              className="w-full px-6 py-4 pr-16 bg-background border border-neutral-200 dark:border-neutral-800 rounded-full text-sm focus:outline-none focus:border-neutral-400 transition-colors shadow-sm disabled:opacity-70 disabled:bg-neutral-50 dark:disabled:bg-neutral-900"
+              className="w-full px-6 py-4 pr-16 bg-background border border-card-border rounded-full text-sm focus:outline-none focus:border-muted transition-colors shadow-sm disabled:opacity-70 disabled:bg-card"
             />
             <button 
               type="submit"
@@ -170,7 +170,7 @@ export default function AiAssistantPage() {
               {sendMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </button>
           </form>
-          <div className="text-center mt-3 text-xs text-neutral-500">
+          <div className="text-center mt-3 text-xs text-muted">
             AI can make mistakes. Please verify important product information.
           </div>
         </div>

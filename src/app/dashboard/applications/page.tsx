@@ -75,32 +75,32 @@ export default function MyApplicationsPage() {
       <div className="space-y-8 animate-in fade-in duration-500">
         <div>
           <h1 className="text-3xl font-serif mb-2">My Applications</h1>
-          <p className="text-neutral-500">Track the status of your job applications.</p>
+          <p className="text-muted">Track the status of your job applications.</p>
         </div>
 
-        <div className="bg-background rounded-sm border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+        <div className="bg-background rounded-sm border border-card-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="bg-neutral-50 dark:bg-neutral-900/50 border-b border-neutral-200 dark:border-neutral-800">
+              <thead className="bg-card border-b border-card-border">
                 <tr>
-                  <th className="px-6 py-4 font-medium uppercase tracking-widest text-xs text-neutral-500">Role</th>
-                  <th className="px-6 py-4 font-medium uppercase tracking-widest text-xs text-neutral-500">Date Applied</th>
-                  <th className="px-6 py-4 font-medium uppercase tracking-widest text-xs text-neutral-500">Status</th>
-                  <th className="px-6 py-4 font-medium uppercase tracking-widest text-xs text-neutral-500">Interview</th>
-                  <th className="px-6 py-4 font-medium uppercase tracking-widest text-xs text-neutral-500 text-right">Resume</th>
+                  <th className="px-6 py-4 font-medium uppercase tracking-widest text-xs text-muted">Role</th>
+                  <th className="px-6 py-4 font-medium uppercase tracking-widest text-xs text-muted">Date Applied</th>
+                  <th className="px-6 py-4 font-medium uppercase tracking-widest text-xs text-muted">Status</th>
+                  <th className="px-6 py-4 font-medium uppercase tracking-widest text-xs text-muted">Interview</th>
+                  <th className="px-6 py-4 font-medium uppercase tracking-widest text-xs text-muted text-right">Resume</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
+              <tbody className="divide-y divide-card-border">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-neutral-500">Loading applications...</td>
+                    <td colSpan={5} className="px-6 py-12 text-center text-muted">Loading applications...</td>
                   </tr>
                 ) : applications?.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-6 py-24 text-center">
                       <div className="flex flex-col items-center justify-center">
-                        <Briefcase className="w-12 h-12 text-neutral-300 dark:text-neutral-700 mb-4" />
-                        <p className="text-neutral-500 mb-6">You haven&apos;t applied to any roles yet.</p>
+                        <Briefcase className="w-12 h-12 text-muted mb-4" />
+                        <p className="text-muted mb-6">You haven&apos;t applied to any roles yet.</p>
                         <Link
                           href="/careers"
                           className="px-6 py-3 bg-foreground text-background text-sm font-medium uppercase tracking-widest rounded-sm hover:opacity-90 transition-opacity"
@@ -112,9 +112,9 @@ export default function MyApplicationsPage() {
                   </tr>
                 ) : (
                   applications?.map((app) => (
-                    <tr key={app._id} className="hover:bg-neutral-50 dark:hover:bg-neutral-900/30 transition-colors">
-                      <td className="px-6 py-4 font-medium">{app.job?.title || "Unknown Role"}</td>
-                      <td className="px-6 py-4 text-neutral-500">
+                    <tr key={app._id} className="hover:bg-foreground/5 transition-colors">
+                      <td className="px-6 py-4 font-medium">{app.jobTitle || app.job?.title || "Unknown Role"}</td>
+                      <td className="px-6 py-4 text-muted">
                         {new Date(app.appliedAt).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4">
@@ -127,14 +127,14 @@ export default function MyApplicationsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        {getInterviewButton(app._id, app.job?.title || "Position")}
+                        {getInterviewButton(app._id, app.jobTitle || app.job?.title || "Position")}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <a
                           href={app.resumeUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="text-neutral-500 hover:text-foreground underline underline-offset-4 transition-colors"
+                          className="text-muted hover:text-foreground underline underline-offset-4 transition-colors"
                         >
                           View
                         </a>

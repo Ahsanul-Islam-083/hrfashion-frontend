@@ -42,13 +42,13 @@ export default function AdminOverviewPage() {
     <div className="space-y-10 animate-in fade-in duration-500">
       <div>
         <h1 className="text-3xl font-serif mb-1">Admin Overview</h1>
-        <p className="text-neutral-500 text-sm">Site-wide metrics and recent activity.</p>
+        <p className="text-muted text-sm">Site-wide metrics and recent activity.</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map(({ label, value, icon: Icon }) => (
-          <div key={label} className="bg-background rounded-sm border border-neutral-200 dark:border-neutral-800 p-6">
-            <div className="flex items-center gap-2 text-neutral-500 mb-2">
+          <div key={label} className="bg-background rounded-sm border border-card-border p-6">
+            <div className="flex items-center gap-2 text-muted mb-2">
               <Icon className="w-4 h-4" />
               <span className="text-xs uppercase tracking-widest font-medium">{label}</span>
             </div>
@@ -58,7 +58,7 @@ export default function AdminOverviewPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-background rounded-sm border border-neutral-200 dark:border-neutral-800 p-6">
+        <div className="bg-background rounded-sm border border-card-border p-6">
           <h2 className="text-sm font-medium uppercase tracking-widest mb-6">Applications by Status (Bar)</h2>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={barData} barSize={40}>
@@ -74,7 +74,7 @@ export default function AdminOverviewPage() {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-background rounded-sm border border-neutral-200 dark:border-neutral-800 p-6">
+        <div className="bg-background rounded-sm border border-card-border p-6">
           <h2 className="text-sm font-medium uppercase tracking-widest mb-6">Applications Distribution</h2>
           <ResponsiveContainer width="100%" height={220}>
             <PieChart>
@@ -90,21 +90,21 @@ export default function AdminOverviewPage() {
         </div>
       </div>
 
-      <div className="bg-background rounded-sm border border-neutral-200 dark:border-neutral-800 overflow-hidden">
-        <div className="p-6 border-b border-neutral-200 dark:border-neutral-800">
+      <div className="bg-background rounded-sm border border-card-border overflow-hidden">
+        <div className="p-6 border-b border-card-border">
           <h2 className="text-lg font-serif">Recent Applications</h2>
         </div>
-        <div className="divide-y divide-neutral-200 dark:divide-neutral-800">
+        <div className="divide-y divide-card-border">
           {isLoading ? (
-            <div className="p-8 text-center text-neutral-500">Loading...</div>
+            <div className="p-8 text-center text-muted">Loading...</div>
           ) : data?.recentApplications.length === 0 ? (
-            <div className="p-8 text-center text-neutral-500">No applications yet.</div>
+            <div className="p-8 text-center text-muted">No applications yet.</div>
           ) : (
             data?.recentApplications.map((app) => (
               <div key={app._id} className="p-5 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
                 <div>
                   <p className="font-medium">{app.applicantName}</p>
-                  <p className="text-sm text-neutral-500">{app.jobTitle || app.jobId} · {new Date(app.appliedAt).toLocaleDateString()}</p>
+                  <p className="text-sm text-muted">{app.jobTitle || app.jobId} · {new Date(app.appliedAt).toLocaleDateString()}</p>
                 </div>
                 <span className={`self-start px-2.5 py-1 rounded-full text-[10px] font-medium uppercase tracking-widest
                   ${app.status === "accepted" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" :

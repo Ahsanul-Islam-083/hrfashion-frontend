@@ -110,7 +110,7 @@ export default function SettingsPage() {
     <div className="max-w-2xl animate-in fade-in duration-500">
       <div className="mb-12">
         <h1 className="text-3xl font-serif mb-2">Settings</h1>
-        <p className="text-neutral-500">Manage your account preferences and security.</p>
+        <p className="text-muted">Manage your account preferences and security.</p>
       </div>
 
       <div className="space-y-12">
@@ -119,33 +119,33 @@ export default function SettingsPage() {
           <h2 className="text-lg font-medium mb-6 uppercase tracking-widest">Profile Details</h2>
           <form onSubmit={handleProfileUpdate} className="space-y-6">
             <div className="space-y-1">
-              <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Email Address (Read-only)</label>
+              <label className="text-xs uppercase tracking-widest font-medium text-muted">Email Address (Read-only)</label>
               <input 
                 type="email" 
                 disabled
                 value={session?.user?.email || ""}
-                className="w-full px-4 py-3 bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm text-neutral-500 cursor-not-allowed"
+                className="w-full px-4 py-3 bg-card border border-card-border rounded-sm text-sm text-muted cursor-not-allowed"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Full Name</label>
+              <label className="text-xs uppercase tracking-widest font-medium text-muted">Full Name</label>
               <input 
                 type="text" 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground transition-colors"
+                className="w-full px-4 py-3 bg-card border border-card-border rounded-sm text-sm focus:outline-none focus:border-foreground transition-colors"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Avatar Image</label>
+              <label className="text-xs uppercase tracking-widest font-medium text-muted">Avatar Image</label>
               <div className="flex items-center gap-4 mt-2">
-                <div className="w-16 h-16 rounded-full overflow-hidden bg-neutral-100 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 flex-shrink-0">
+                <div className="w-16 h-16 rounded-full overflow-hidden bg-card border border-card-border flex-shrink-0">
                   {avatar ? (
                     <img src={avatar} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-neutral-400 font-serif text-2xl">
+                    <div className="w-full h-full flex items-center justify-center text-muted font-serif text-2xl">
                       {name.charAt(0) || "U"}
                     </div>
                   )}
@@ -155,12 +155,12 @@ export default function SettingsPage() {
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploading}
-                    className="flex items-center justify-center gap-2 px-4 py-2 border border-neutral-200 dark:border-neutral-800 text-xs font-medium uppercase tracking-widest rounded-sm hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors disabled:opacity-50 w-full sm:w-auto"
+                    className="flex items-center justify-center gap-2 px-4 py-2 border border-card-border text-xs font-medium uppercase tracking-widest rounded-sm hover:bg-foreground/5 transition-colors disabled:opacity-50 w-full sm:w-auto"
                   >
                     {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                     {isUploading ? "Uploading..." : "Upload New Image"}
                   </button>
-                  <p className="text-[10px] text-neutral-500 uppercase tracking-widest">Max 5MB. JPEG or PNG.</p>
+                  <p className="text-[10px] text-muted uppercase tracking-widest">Max 5MB. JPEG or PNG.</p>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -182,26 +182,26 @@ export default function SettingsPage() {
           </form>
         </section>
 
-        <hr className="border-neutral-200 dark:border-neutral-800" />
+        <hr className="border-card-border" />
 
         {/* Security Settings */}
         <section>
           <h2 className="text-lg font-medium mb-6 uppercase tracking-widest">Security</h2>
           <form onSubmit={handlePasswordUpdate} className="space-y-6">
             <div className="space-y-1">
-              <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">Current Password</label>
+              <label className="text-xs uppercase tracking-widest font-medium text-muted">Current Password</label>
               <div className="relative">
                 <input 
                   type={showCurrentPassword ? "text" : "password"}
                   required
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground transition-colors pr-12"
+                  className="w-full px-4 py-3 bg-card border border-card-border rounded-sm text-sm focus:outline-none focus:border-foreground transition-colors pr-12"
                 />
                 <button
                   type="button"
                   onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-foreground transition-colors p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors p-1"
                 >
                   {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -209,19 +209,19 @@ export default function SettingsPage() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-xs uppercase tracking-widest font-medium text-neutral-500">New Password</label>
+              <label className="text-xs uppercase tracking-widest font-medium text-muted">New Password</label>
               <div className="relative">
                 <input 
                   type={showNewPassword ? "text" : "password"}
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-sm text-sm focus:outline-none focus:border-foreground transition-colors pr-12"
+                  className="w-full px-4 py-3 bg-card border border-card-border rounded-sm text-sm focus:outline-none focus:border-foreground transition-colors pr-12"
                 />
                 <button
                   type="button"
                   onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-foreground transition-colors p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors p-1"
                 >
                   {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -231,7 +231,7 @@ export default function SettingsPage() {
             <button 
               type="submit"
               disabled={isPasswordLoading || !currentPassword || !newPassword}
-              className="px-8 py-3 border border-neutral-200 dark:border-neutral-800 text-sm font-medium uppercase tracking-widest rounded-sm hover:bg-neutral-50 dark:hover:bg-neutral-900 transition-colors flex items-center justify-center min-w-[180px]"
+              className="px-8 py-3 border border-card-border text-sm font-medium uppercase tracking-widest rounded-sm hover:bg-foreground/5 transition-colors flex items-center justify-center min-w-[180px]"
             >
               {isPasswordLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Update Password"}
             </button>

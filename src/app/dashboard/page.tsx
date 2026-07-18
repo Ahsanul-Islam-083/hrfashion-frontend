@@ -34,12 +34,12 @@ export default function DashboardOverviewPage() {
     <div className="space-y-8 animate-in fade-in duration-500">
       <div>
         <h1 className="text-3xl font-serif mb-2">Overview</h1>
-        <p className="text-neutral-500">Welcome back to your dashboard.</p>
+        <p className="text-muted">Welcome back to your dashboard.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-background rounded-sm border border-neutral-200 dark:border-neutral-800 p-6">
-          <div className="flex items-center gap-3 mb-2 text-neutral-500">
+        <div className="bg-background rounded-sm border border-card-border p-6">
+          <div className="flex items-center gap-3 mb-2 text-muted">
             <FileText className="w-5 h-5" />
             <h3 className="font-medium text-sm uppercase tracking-widest">Total Applications</h3>
           </div>
@@ -48,8 +48,8 @@ export default function DashboardOverviewPage() {
           </p>
         </div>
         
-        <div className="bg-background rounded-sm border border-neutral-200 dark:border-neutral-800 p-6">
-          <div className="flex items-center gap-3 mb-2 text-neutral-500">
+        <div className="bg-background rounded-sm border border-card-border p-6">
+          <div className="flex items-center gap-3 mb-2 text-muted">
             <Clock className="w-5 h-5" />
             <h3 className="font-medium text-sm uppercase tracking-widest">Pending Review</h3>
           </div>
@@ -58,8 +58,8 @@ export default function DashboardOverviewPage() {
           </p>
         </div>
 
-        <div className="bg-background rounded-sm border border-neutral-200 dark:border-neutral-800 p-6">
-          <div className="flex items-center gap-3 mb-2 text-neutral-500">
+        <div className="bg-background rounded-sm border border-card-border p-6">
+          <div className="flex items-center gap-3 mb-2 text-muted">
             <Heart className="w-5 h-5" />
             <h3 className="font-medium text-sm uppercase tracking-widest">Wishlist Items</h3>
           </div>
@@ -69,27 +69,27 @@ export default function DashboardOverviewPage() {
         </div>
       </div>
 
-      <div className="bg-background rounded-sm border border-neutral-200 dark:border-neutral-800 overflow-hidden">
-        <div className="flex justify-between items-center p-6 border-b border-neutral-200 dark:border-neutral-800">
+      <div className="bg-background rounded-sm border border-card-border overflow-hidden">
+        <div className="flex justify-between items-center p-6 border-b border-card-border">
           <h2 className="text-lg font-serif">Recent Applications</h2>
-          <Link href="/dashboard/applications" className="text-sm text-neutral-500 hover:text-foreground flex items-center gap-1 transition-colors">
+          <Link href="/dashboard/applications" className="text-sm text-muted hover:text-foreground flex items-center gap-1 transition-colors">
             View All <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
         
-        <div className="divide-y divide-neutral-200 dark:divide-neutral-800">
+        <div className="divide-y divide-card-border">
           {isAppsLoading ? (
-            <div className="p-8 text-center text-neutral-500">Loading...</div>
+            <div className="p-8 text-center text-muted">Loading...</div>
           ) : recentApps.length === 0 ? (
-            <div className="p-8 text-center text-neutral-500">
+            <div className="p-8 text-center text-muted">
               You haven&apos;t submitted any applications yet.
             </div>
           ) : (
             recentApps.map(app => (
-              <div key={app._id} className="p-6 flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:bg-neutral-50 dark:hover:bg-neutral-900/50 transition-colors">
+              <div key={app._id} className="p-6 flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:bg-foreground/5 transition-colors">
                 <div>
                   <h3 className="font-medium">{app.job?.title || "Application"}</h3>
-                  <p className="text-sm text-neutral-500 mt-1">
+                  <p className="text-sm text-muted mt-1">
                     Applied on {new Date(app.appliedAt).toLocaleDateString()}
                   </p>
                 </div>

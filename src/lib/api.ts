@@ -57,7 +57,8 @@ export interface Application {
   status: "pending" | "accepted" | "rejected";
   appliedAt: string;
   reviewedAt?: string;
-  job?: Job; // Populated from backend
+  job?: Job;
+  jobTitle?: string;
 }
 
 export interface WishlistItem {
