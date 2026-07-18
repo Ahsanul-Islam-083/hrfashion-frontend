@@ -99,7 +99,7 @@ export default function AiAssistantPage() {
             </div>
           ) : chatLog.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center max-w-md mx-auto space-y-4">
-              <div className="w-12 h-12 bg-neutral-100 dark:bg-neutral-900 rounded-full flex items-center justify-center mb-2">
+              <div className="w-12 h-12 bg-card border border-card-border rounded-full flex items-center justify-center mb-2">
                 <Bot className="w-6 h-6 text-foreground" />
               </div>
               <h3 className="text-lg font-medium">Welcome to HR Fashion Assistant</h3>
@@ -110,10 +110,10 @@ export default function AiAssistantPage() {
           ) : (
             chatLog.map((msg) => (
               <div key={msg._id} className={`flex gap-4 max-w-[85%] ${msg.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-foreground text-background' : 'bg-neutral-100 dark:bg-neutral-900 text-foreground'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${msg.role === 'user' ? 'bg-foreground text-background' : 'bg-card border border-card-border text-foreground'}`}>
                   {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                 </div>
-                <div className={`p-4 rounded-sm text-sm leading-relaxed ${msg.role === 'user' ? 'bg-neutral-100 dark:bg-neutral-900 text-foreground' : 'border border-neutral-200 dark:border-neutral-800'} whitespace-pre-wrap`}>
+                <div className={`p-4 rounded-sm text-sm leading-relaxed ${msg.role === 'user' ? 'bg-card text-foreground' : 'bg-card border border-card-border'} whitespace-pre-wrap`}>
                   {msg.content}
                 </div>
               </div>
@@ -122,10 +122,10 @@ export default function AiAssistantPage() {
           
           {sendMutation.isPending && (
              <div className="flex gap-4 max-w-[85%]">
-                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-neutral-100 dark:bg-neutral-900 text-foreground">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-card border border-card-border text-foreground">
                   <Bot className="w-4 h-4" />
                 </div>
-                <div className="p-4 rounded-sm text-sm leading-relaxed border border-neutral-200 dark:border-neutral-800 flex items-center gap-1.5">
+                <div className="p-4 rounded-sm text-sm leading-relaxed bg-card border border-card-border flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                   <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
                   <span className="w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce"></span>

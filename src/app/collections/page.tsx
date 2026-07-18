@@ -164,7 +164,7 @@ function CollectionsContent() {
               </div>
             ) : (
               <>
-                <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <StaggerContainer key={data?.products.map(p => p._id).join(",")} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {data?.products.map((product) => (
                     <StaggerItem key={product._id}>
                       <ProductCard {...product} />

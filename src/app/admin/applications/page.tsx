@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { CheckCircle, XCircle, Loader2, ExternalLink, Eye } from "lucide-react";
 import { getToken } from "@/lib/auth-client";
-import { fetchApplicationsAdmin, updateApplicationStatus, fetchInterviewsAdmin, type Interview } from "@/lib/api";
+import { fetchApplicationsAdmin, updateApplicationStatus, fetchInterviewsAdmin, fetchCareersAdmin, type Interview } from "@/lib/api";
 import { QUERY_KEYS } from "@/lib/queryKeys";
 
 const STATUS_STYLES: Record<string, string> = {
@@ -100,6 +100,19 @@ export default function AdminApplicationsPage() {
     },
   });
 
+  const { data: jobsData } = useQuery({
+    queryKey: QUERY_KEYS.admin.careers(),
+    queryFn: async () => {
+      const t = await getToken();
+      if (!t) throw new Error("No token");
+      return fetchCareersAdmin(t);
+    },
+  });
+
+  const jobMap = new Map<string, string>(
+    (jobsData?.jobs || []).map(j => [j._id, j.title])
+  );
+
   const interviewMap = new Map<string, Interview>(
     (interviewsData?.interviews || []).map(i => [i.applicationId, i])
   );
@@ -155,7 +168,7 @@ export default function AdminApplicationsPage() {
                       <td className="px-5 py-3">
                         <p className="font-medium">{app.applicantName}</p>
                       </td>
-                      <td className="px-5 py-3 text-neutral-500 text-xs">{app.job?.title || app.jobId}</td>
+                      <td className="px-5 py-3 text-neutral-500 text-xs">{jobMap.get(app.jobId) || app.jobId}</td>
                       <td className="px-5 py-3 text-neutral-500">{app.email}</td>
                       <td className="px-5 py-3 text-neutral-500">{new Date(app.appliedAt).toLocaleDateString()}</td>
                       <td className="px-5 py-3">
