@@ -54,7 +54,7 @@ export function Services() {
 
       <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
         {items.map((service, idx) => (
-          <StaggerItem key={"_id" in service ? service._id : idx}>
+          <StaggerItem key={"_id" in service ? String(service._id) : idx}>
             <div className="group bg-card p-8 rounded-sm border border-card-border overflow-hidden hover:shadow-xl transition-shadow duration-[600ms] h-full">
               <div className="w-12 h-12 bg-accent text-pure-white flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-[600ms] ease-out transform-gpu rounded-sm">
                 <ServiceIcon name={service.icon} />

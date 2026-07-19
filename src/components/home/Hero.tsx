@@ -8,11 +8,11 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 const HERO_IMAGES = [
-  "/Hero1.jpg",
-  "/Hero2.jpg",
-  "/Hero3.jpg",
-  "/Hero4.jpg",
-  "/Hero5.jpg",
+  "/hero1.jpg",
+  "/hero2.jpg",
+  "/hero3.jpg",
+  "/hero4.jpg",
+  "/hero5.jpg",
 ];
 
 export function Hero() {

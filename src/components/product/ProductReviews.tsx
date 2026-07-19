@@ -297,7 +297,7 @@ export function ProductReviews({ productId }: { productId: string }) {
   const [showForm, setShowForm] = useState(false);
 
   const currentUserId = session?.user?.id;
-  const isAdmin = (session?.user as any)?.role === "admin";
+  const isAdmin = session?.user?.role === "admin";
 
   const { data, isLoading } = useQuery({
     queryKey: QUERY_KEYS.reviews(productId),
