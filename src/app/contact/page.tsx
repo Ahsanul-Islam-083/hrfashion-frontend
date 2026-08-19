@@ -51,8 +51,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-sm font-medium uppercase tracking-widest text-foreground mb-1">Email Us</h3>
-                    <a href="mailto:hello@hrfashion.com" className="hover:text-foreground transition-colors">
-                      hello@hrfashion.com
+                    <a href="mailto:hrfasionofficial0@gmail.com" className="hover:text-foreground transition-colors">
+                      hrfasionofficial0@gmail.com
                     </a>
                   </div>
                 </div>
@@ -63,8 +63,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-sm font-medium uppercase tracking-widest text-foreground mb-1">Call Us</h3>
-                    <a href="tel:+8801700000000" className="hover:text-foreground transition-colors">
-                      +880 1700 000000
+                    <a href="tel:+8801716944281" className="hover:text-foreground transition-colors">
+                      +880 1716 944281
                     </a>
                   </div>
                 </div>
@@ -76,8 +76,8 @@ export default function ContactPage() {
                   <div>
                     <h3 className="text-sm font-medium uppercase tracking-widest text-foreground mb-1">Visit Us</h3>
                     <p className="leading-relaxed">
-                      Level 4, House 12, Road 4<br />
-                      Banani, Dhaka 1213<br />
+                      House # 107, Level #05 Biruttam C.R Datta Road<br />
+                      Dhaka 1213<br />
                       Bangladesh
                     </p>
                   </div>

@@ -29,18 +29,18 @@ export function Footer() {
             <h4 className="text-sm uppercase font-semibold tracking-wider mb-6">Contact</h4>
             <ul className="space-y-4 text-sm text-muted">
               <li>
-                <a href="mailto:hello@hrfashion.com" className="hover:text-foreground transition-colors">
-                  hello@hrfashion.com
+                <a href="mailto:hrfasionofficial0@gmail.com" className="hover:text-foreground transition-colors">
+                  hrfasionofficial0@gmail.com
                 </a>
               </li>
               <li>
-                <a href="tel:+8801700000000" className="hover:text-foreground transition-colors">
-                  +880 1700 000000
+                <a href="tel:+8801716944281" className="hover:text-foreground transition-colors">
+                  +880 1716 944281
+
                 </a>
               </li>
               <li className="leading-relaxed">
-                Level 4, House 12, Road 4<br />
-                Banani, Dhaka 1213<br />
+                House # 107, Level #05 Biruttam C.R Datta Road<br />
                 Bangladesh
               </li>
             </ul>
